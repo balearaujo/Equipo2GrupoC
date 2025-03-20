@@ -3,6 +3,6 @@ using namespace std;
 
 int main(){
 
-    cout<<"Proximamente...";
+    cout<<"Proximamente.....";
     return 0;
 }
