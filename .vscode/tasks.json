@@ -8,7 +8,9 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"${file}",
+				"main.cpp",
+				"test1.cpp",
+				"test2.cpp", // add all cpp files needed
 				"-I${workspaceFolder}/include",
 				"-DSFML_STATIC",
 				"-o",
