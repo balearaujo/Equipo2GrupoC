@@ -9,12 +9,12 @@
 				"-fdiagnostics-color=always",
 				"-g",
 				"main.cpp",
-				"test1.cpp",
-				"test2.cpp", // add all cpp files needed
+				"logIn.cpp",
+				"signUp.cpp", // add all cpp files needed
 				"-I${workspaceFolder}/include",
 				"-DSFML_STATIC",
 				"-o",
-				"${fileDirname}\\${fileBasenameNoExtension}.exe",
+				"${workspaceFolder}/output/${fileBasenameNoExtension}.exe",
 				"-L${workspaceFolder}/lib",
 				"-Llib",
 				"-lsfml-graphics-s",
@@ -36,6 +36,15 @@
 				"isDefault": true
 			},
 			"detail": "compiler: C:\\msys64\\ucrt64\\bin\\g++.exe"
+		},
+		{
+			"label": "Ejecutar main.exe",
+			"type": "shell",
+			"command": "${workspaceFolder}\\output\\main.exe",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }

@@ -1,37 +1,76 @@
 #include <SFML/Graphics.hpp>
 #include "header.hpp"
-using namespace sf; 
+using namespace std; 
+using namespace sf;
 
 int main() {
-    RenderWindow window(sf::VideoMode({1920, 1080}), "Selecciona pantalla");
-    Font font("ARIAL.TTF");
-    Text titulo(font, "hola", 30);
-    titulo.setFillColor(Color::Red);
+    RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!", State::Windowed);
+    
+    Font font("assets/ARIAL.TTF");
+    Text title(font, "Fabulous Fred!", 100);
+    Text optLogIn(font, "Log in", 50);
+    Text optSignUp(font, "Sign up", 50);
+    //title
+    title.setFillColor(Color::Blue);
+    title.setOrigin({150,40}); // set the origin in the middle
+    title.setPosition({250, 150});
+
+    //login
+    optLogIn.setFillColor({Color::White});
+    optLogIn.setOrigin({75,20}); // set the origin in the middle
+    optLogIn.setPosition({400, 400}); 
+    
+    //signup
+    optSignUp.setFillColor({Color::White});
+    optSignUp.setOrigin({75,20}); // set the origin in the middle
+    optSignUp.setPosition({400, 500});
+
+    Image icon("assets/logo.png");
+    window.setIcon(icon);
+    int options[2] = {1,0};
 
     while (window.isOpen()) {
-        bool open = false;
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             }
-        }
 
-        // test, open screen1 windoww and close main window
-        if (Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
-            window.setVisible(false);
-            screen1(); // Asegúrate de que esta función esté definida
-            window.setVisible(true);
+            if (Keyboard::isKeyPressed(Keyboard::Key::Escape)){
+                window.close();
+            }
+            if (Keyboard::isKeyPressed(Keyboard::Key::Up)){
+                options[0] = 1;
+                options[1] = 0;
+                optSignUp.setFillColor({Color::White});
+                optLogIn.setFillColor({Color::Blue});
+            }
+
+            if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
+                options[0] = 0;
+                options[1] = 1;
+                optSignUp.setFillColor({Color::Blue});
+                optLogIn.setFillColor({Color::White});
+            }
+
+            if (Keyboard::isKeyPressed(Keyboard::Key::Enter)){
+                if (options[0] == 1){ // log in
+                    window.setVisible(false);
+                    screenLogIn();
+                    window.setVisible(true);
+                }
+
+                if (options[1] == 1){ // sign up
+                    window.setVisible(false);
+                    screenSignUp();
+                    window.setVisible(true);
+                }
+            }
         }
         
-        // test, open screen2 windoww and close main window
-        if (Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
-            window.setVisible(false);
-            screen2(); 
-            window.setVisible(true);
-        }
-        
-        window.clear(sf::Color::Black);
-        window.draw(titulo);
+        window.clear(Color::Black);
+        window.draw(title);
+        window.draw(optSignUp);
+        window.draw(optLogIn);
         window.display();
     }
     
