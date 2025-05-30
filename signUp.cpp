@@ -70,9 +70,7 @@ void screenSignUp(){
     sf::String concatConfPass("");
     
     // FALTA
-    // HACER QUE DEJE DE ESCRIBIR AL PRESIONAR ENTER.
     // HACER UN BOTON DE CONFIRMAR.
-    // HACER QUE BORRE.
 
     // declaration
     Font font("assets/ARIAL.TTF");
@@ -81,6 +79,7 @@ void screenSignUp(){
     Text tPass(font, "Password: ", 50);
     Text tConfPass(font, "Confirm password:", 50);
     Text tWarnings(font, "Special characters not allowed!", 30);
+    
     
     Text inpUsername(font, "->", 50);
     Text inpPass(font, "->", 50);
@@ -123,9 +122,7 @@ void screenSignUp(){
     inpConfPass.setPosition({550, 450});
     
     //extra
-    int tam = tUsername.getString().getSize();
-    cout << tam;
-
+    // sf::String test("");
 
     while (window.isOpen()){
         while (const std::optional event = window.pollEvent()){
@@ -199,11 +196,18 @@ void setInputValues(sf::Text &variable, const sf::Event &event, sf::String &conc
     // va asignando el texto concatenado a la variable ingresada.
     if (const sf::Event::TextEntered *typedText = event.getIf<Event::TextEntered>()){
         if (typedText->unicode < 128){
-            if (typedText->unicode == 32 || typedText->unicode>126 || typedText->unicode<=31){
+            if (typedText->unicode == 32 || typedText->unicode > 127 || (typedText->unicode < 32 && typedText->unicode != 8)){
                 cout << "special character ";
                 tWarnings.setFillColor(Color::Yellow);    
             } else{
-                concatAux += typedText->unicode;
+                if (typedText->unicode!=8){
+                    concatAux += typedText->unicode;
+                }
+                // verificar si es tecla borrar y que tenga uno o mas caracteres
+                if (concatAux.getSize()>0 && Keyboard::isKeyPressed(Keyboard::Key::Backspace)){
+                    // elimina en la posicion n-1
+                    concatAux.erase(concatAux.getSize()-1, 1);
+                }
                 variable.setString(concatAux);
                 cout << variable.getString().toAnsiString();
                 tWarnings.setFillColor(Color::Black);    
