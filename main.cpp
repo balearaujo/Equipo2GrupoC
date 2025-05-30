@@ -28,7 +28,7 @@ int main() {
     Image icon("assets/logo.png");
     window.setIcon(icon);
     int options[2] = {1,0};
-
+    
     while (window.isOpen()) {
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {

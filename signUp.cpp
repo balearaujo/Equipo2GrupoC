@@ -5,11 +5,74 @@
 using namespace sf;
 using namespace std;
 
+// static int totalUsers{0};
+
+// ACABAR FUNCION CUANDO FUNCIONE LA SIMULACIÓN DE INPUT, TODAVIA NO SIRVE BIEN
+
+// void addUser(FILE *users){
+//     User newUser;
+//     int textSize{25};
+//     bool samePass = false;
+
+//     // allocate dynamic memory
+//     char *passAux = new char[textSize];
+//     char *passAux2 = new char[textSize];
+//     newUser.username = new char[textSize]; 
+//     newUser.password = new char[textSize];
+//     newUser.games = new GameHistory[3];
+    
+//     totalUsers++;
+//     newUser.idUser = totalUsers;
+
+//     // cin user
+
+//     do{ // password and confirm password
+//         // cin pass aux
+
+//         fflush(stdin);
+
+//         // cin pass aux 2
+
+//         fflush(stdin);
+//         // if (strcmp(passAux,passAux2)==0){
+//         //     samePass = true;
+//         //     newUser.password = strcpy(newUser.password, passAux);
+//         // } else{
+//         //     cout << "The password must be the same" << endl;
+//         // }
+//     } while (!samePass);
+//     // Write dynamic memory variables separately because when using fwrite, it accesses
+//     // to the memory address and not to the content.
+//     fwrite(&newUser.idUser, sizeof(int), 1, users);
+//     fwrite(newUser.username, sizeof(char), textSize, users);
+//     fwrite(newUser.password, sizeof(char), textSize, users);
+    
+//     // !!!!!!! we need to verify the number of games started||concluded!!!!!!!! 
+//     // the game history hasn't yet been saved
+//     // fwrite(newUser.games, sizeof(GameHistory), 1, users);
+//     delete [] passAux;
+//     delete [] passAux2;
+//     delete [] newUser.username;
+//     delete [] newUser.password;
+//     // delete [] newUser.games;
+// }
+
+
 void screenSignUp(){
     RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!");
     window.setTitle("Sign up");
 
-    int textOpt[3] = {0,0,0};
+    // 0 = username, 1 = password, 2 = confirm password 
+    int posAux{0};
+    bool button = false;
+    sf::String concatUser("");
+    sf::String concatPass("");
+    sf::String concatConfPass("");
+    
+    // FALTA
+    // HACER QUE DEJE DE ESCRIBIR AL PRESIONAR ENTER.
+    // HACER UN BOTON DE CONFIRMAR.
+    // HACER QUE BORRE.
 
     // declaration
     Font font("assets/ARIAL.TTF");
@@ -17,32 +80,53 @@ void screenSignUp(){
     Text tUsername(font, "Username: ", 50);
     Text tPass(font, "Password: ", 50);
     Text tConfPass(font, "Confirm password:", 50);
-    Text inpUsername(font, "aaaa", 50);
+    Text tWarnings(font, "Special characters not allowed!", 30);
+    
+    Text inpUsername(font, "->", 50);
+    Text inpPass(font, "->", 50);
+    Text inpConfPass(font, "->", 50);
+    
 
     // color
     tTitle.setFillColor(Color::Red);
     tUsername.setFillColor(Color::White);
-    inpUsername.setFillColor(Color::Green);
     tPass.setFillColor(Color::White);
     tConfPass.setFillColor(Color::White);
+    tWarnings.setFillColor(Color::Black);
+    
+    inpUsername.setFillColor(Color::Green);
+    inpPass.setFillColor(Color::Green);
+    inpConfPass.setFillColor(Color::Green);
+    
 
     // origin
     tTitle.setOrigin({90, 30});
     tUsername.setOrigin({75, 20});
-    inpUsername.setOrigin({75,20});
     tPass.setOrigin({75, 20});
     tConfPass.setOrigin({75, 20});
+    tWarnings.setOrigin({64, 17});
+    
+    inpUsername.setOrigin({75,20});
+    inpPass.setOrigin({75,20});
+    inpConfPass.setOrigin({75,20});
+
 
     // position
     tTitle.setPosition({350, 100});
-    tUsername.setPosition({200, 250});
-    inpUsername.setPosition({600, 250});
-    tPass.setPosition({200, 350});
-    tConfPass.setPosition({200, 450});
+    tUsername.setPosition({100, 250});
+    tPass.setPosition({100, 350});
+    tConfPass.setPosition({100, 450});
+    tWarnings.setPosition({100, 600});
 
-    char *aux;
-    aux = new char[200];
-    sf::String hola("");
+    inpUsername.setPosition({350, 250});
+    inpPass.setPosition({350, 350});
+    inpConfPass.setPosition({550, 450});
+    
+    //extra
+    int tam = tUsername.getString().getSize();
+    cout << tam;
+
+
     while (window.isOpen()){
         while (const std::optional event = window.pollEvent()){
             
@@ -50,29 +134,80 @@ void screenSignUp(){
                 window.close();
             }
             
-            // const auto es porque no cambia el texto que recibe TextEntered, el auto es para que deduzca el tipo (puntero a constante)
-            // getIf devuelve puntero a constante, es un puntero porque no se puede modificar el contenido que recibe
-            // TextEntered, es decir, getIf devuelve el contenido de modo "lectura" a enteredUsername.
-
-            if (const auto *enteredUsername = event->getIf<Event::TextEntered>()){
-                if (enteredUsername->unicode < 128){
-                    hola += enteredUsername->unicode;
-                    inpUsername.setString(hola);
-                }
-            }
             if (Keyboard::isKeyPressed(Keyboard::Key::Escape)){
                 window.close();
             }
-            if (event->is<sf::Event::Closed>())
-                window.close();
+
+            // adjust posAux to handle "input" textbox
+            if (posAux>=0 && posAux<2){ // posAux between 0-1
+                if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
+                    posAux++;
+                    cout << posAux;
+                }
+            }
+
+            if (posAux>0 && posAux<=2){ // posAux between 1-2
+                if (Keyboard::isKeyPressed(Keyboard::Key::Up)){
+                    posAux--;
+                    cout << posAux;
+                }
+            }
             
+            switch(posAux){ // change colors depending on the position, call function setInputValue to grab typed characters
+                case 0:
+                    // optText[posAux] = 1; 
+                    tUsername.setFillColor(Color::Magenta);
+                    tPass.setFillColor(Color::White);
+                    tConfPass.setFillColor(Color::White);
+                    setInputValues(inpUsername, event.value(), concatUser, tWarnings);
+                    break;
+                case 1:
+                    // optText[posAux] = 1;
+                    tPass.setFillColor(Color::Magenta);
+                    tUsername.setFillColor(Color::White);
+                    tConfPass.setFillColor(Color::White);
+                    setInputValues(inpPass, event.value(), concatPass, tWarnings);
+                    break;
+                case 2:
+                    // optText[posAux] = 1;
+                    tConfPass.setFillColor(Color::Magenta);
+                    tPass.setFillColor(Color::White);
+                    tUsername.setFillColor(Color::White);
+                    setInputValues(inpConfPass, event.value(), concatConfPass, tWarnings);
+                    break;
+                }
+
+
         }
         window.clear(Color::Black);
         window.draw(tTitle);
         window.draw(tUsername);
         window.draw(tPass);
         window.draw(tConfPass);
+        window.draw(tWarnings);
         window.draw(inpUsername);
+        window.draw(inpPass);
+        window.draw(inpConfPass);
         window.display();
+    }
+}
+
+// al estar fuera de la window, se le tiene que pasar el evento, el evento se declara al crear la window. (event = window.pollEvent())
+void setInputValues(sf::Text &variable, const sf::Event &event, sf::String &concatAux, sf::Text &tWarnings){
+    // getIf devuelve puntero a constante, es un puntero porque no se puede modificar el contenido que recibe del evento
+    // TextEntered, es decir, getIf devuelve el contenido de modo "lectura" a typedText y se concatena en concatAux, después se
+    // va asignando el texto concatenado a la variable ingresada.
+    if (const sf::Event::TextEntered *typedText = event.getIf<Event::TextEntered>()){
+        if (typedText->unicode < 128){
+            if (typedText->unicode == 32 || typedText->unicode>126 || typedText->unicode<=31){
+                cout << "special character ";
+                tWarnings.setFillColor(Color::Yellow);    
+            } else{
+                concatAux += typedText->unicode;
+                variable.setString(concatAux);
+                cout << variable.getString().toAnsiString();
+                tWarnings.setFillColor(Color::Black);    
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@ struct User{
 
 // signUp.cpp
 void screenSignUp();
+void setInputValues(sf::Text &, const sf::Event &, sf::String &, sf::Text &);
 
 // logIn.cpp
 void screenLogIn();
