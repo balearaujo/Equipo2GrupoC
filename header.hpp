@@ -1,7 +1,7 @@
 #ifndef HEADER_HPP
 #define HEADER_HPP
 
-// signUp.cpp
+// signUp.cpp estructura
 union GameStatus{
     bool inProgress;
     bool finished;
@@ -22,9 +22,12 @@ struct User{
     GameHistory *games;
 };
 
-// signUp.cpp
+// signUp.cpp funciones
 void screenSignUp();
 void setInputValues(sf::Text &, const sf::Event &, sf::String &, sf::Text &);
+
+
+
 
 // logIn.cpp
 void screenLogIn();

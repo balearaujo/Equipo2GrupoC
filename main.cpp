@@ -5,6 +5,8 @@ using namespace sf;
 
 int main() {
     RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!", State::Windowed);
+    Image icon("assets/logo.png");
+    window.setIcon(icon);
     
     Font font("assets/ARIAL.TTF");
     Text title(font, "Fabulous Fred!", 100);
@@ -25,8 +27,6 @@ int main() {
     optSignUp.setOrigin({75,20}); // set the origin in the middle
     optSignUp.setPosition({400, 500});
 
-    Image icon("assets/logo.png");
-    window.setIcon(icon);
     int options[2] = {1,0};
     
     while (window.isOpen()) {
