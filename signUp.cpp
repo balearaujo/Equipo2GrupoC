@@ -5,59 +5,6 @@
 using namespace sf;
 using namespace std;
 
-// static int totalUsers{0};
-
-// ACABAR FUNCION CUANDO FUNCIONE LA SIMULACIÓN DE INPUT, TODAVIA NO SIRVE BIEN
-
-// void addUser(FILE *users){
-//     User newUser;
-//     int textSize{25};
-//     bool samePass = false;
-
-//     // allocate dynamic memory
-//     char *passAux = new char[textSize];
-//     char *passAux2 = new char[textSize];
-//     newUser.username = new char[textSize]; 
-//     newUser.password = new char[textSize];
-//     newUser.games = new GameHistory[3];
-    
-//     totalUsers++;
-//     newUser.idUser = totalUsers;
-
-//     // cin user
-
-//     do{ // password and confirm password
-//         // cin pass aux
-
-//         fflush(stdin);
-
-//         // cin pass aux 2
-
-//         fflush(stdin);
-//         // if (strcmp(passAux,passAux2)==0){
-//         //     samePass = true;
-//         //     newUser.password = strcpy(newUser.password, passAux);
-//         // } else{
-//         //     cout << "The password must be the same" << endl;
-//         // }
-//     } while (!samePass);
-//     // Write dynamic memory variables separately because when using fwrite, it accesses
-//     // to the memory address and not to the content.
-//     fwrite(&newUser.idUser, sizeof(int), 1, users);
-//     fwrite(newUser.username, sizeof(char), textSize, users);
-//     fwrite(newUser.password, sizeof(char), textSize, users);
-    
-//     // !!!!!!! we need to verify the number of games started||concluded!!!!!!!! 
-//     // the game history hasn't yet been saved
-//     // fwrite(newUser.games, sizeof(GameHistory), 1, users);
-//     delete [] passAux;
-//     delete [] passAux2;
-//     delete [] newUser.username;
-//     delete [] newUser.password;
-//     // delete [] newUser.games;
-// }
-
-
 void screenSignUp(){
     RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!");
     window.setTitle("Sign up");
@@ -71,9 +18,6 @@ void screenSignUp(){
     sf::String concatPass("");
     sf::String concatConfPass("");
     
-    // FALTA
-    // HACER UN BOTON DE CONFIRMAR.
-
     // declaration
     Font font("assets/ARIAL.TTF");
     Text tTitle(font, "Sign up", 75);
@@ -81,6 +25,7 @@ void screenSignUp(){
     Text tPass(font, "Password: ", 50);
     Text tConfPass(font, "Confirm password:", 50);
     Text tWarnings(font, "Special characters not allowed!", 30);
+    Text tWarningPass(font, "", 30);
     Text tButtonSU(font, "Sign Up", 50);
     RectangleShape buttSub(Vector2f{350, 75});
     RectangleShape buttSubBorder(Vector2f{370, 90});
@@ -97,6 +42,7 @@ void screenSignUp(){
     tPass.setFillColor(Color::White);
     tConfPass.setFillColor(Color::White);
     tWarnings.setFillColor(Color::Black);
+    tWarningPass.setFillColor(Color::Black);
     tButtonSU.setFillColor(Color::White);
 
     inpUsername.setFillColor(Color::Green);
@@ -112,6 +58,7 @@ void screenSignUp(){
     tPass.setOrigin({75, 20});
     tConfPass.setOrigin({75, 20});
     tWarnings.setOrigin({64, 17});
+    tWarningPass.setOrigin({64, 17});
     tButtonSU.setOrigin({75, 20});
     
     inpUsername.setOrigin({75,20});
@@ -127,6 +74,7 @@ void screenSignUp(){
     tPass.setPosition({100, 350});
     tConfPass.setPosition({100, 450});
     tWarnings.setPosition({100, 700});
+    tWarningPass.setPosition({100, 750});
     tButtonSU.setPosition({410, 585});
 
     inpUsername.setPosition({350, 250});
@@ -194,6 +142,21 @@ void screenSignUp(){
                     tPass.setFillColor(Color::White);
                     tUsername.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Red);
+                    if (Keyboard::isKeyPressed(Keyboard::Key::Enter)){
+                        if (checkUsername(inpUsername)){ // check if the username is available
+                            if (inpPass.getString().toAnsiString().compare(inpConfPass.getString().toAnsiString())){ // convert sf strings to std string and compare
+                                tWarningPass.setString("Passwords must match!"); 
+                                tWarningPass.setFillColor(Color::Yellow);
+                                cout << "a";
+                            } else{ // user available and same password
+                                tWarningPass.setFillColor(Color::Black);
+                                cout << "b";
+                            }
+                        } else{ // username not available
+                            tWarningPass.setString("Username not available");
+                            tWarningPass.setFillColor(Color::Yellow);
+                        }
+                    }
 
             }
             if (!(inpUsername.getString().isEmpty()) && !(inpPass.getString().isEmpty()) && !(inpConfPass.getString().isEmpty())){
@@ -208,6 +171,7 @@ void screenSignUp(){
         window.draw(tPass);
         window.draw(tConfPass); 
         window.draw(tWarnings);
+        window.draw(tWarningPass);
         window.draw(inpUsername);
         window.draw(inpPass);
         window.draw(inpConfPass);
@@ -244,3 +208,27 @@ void setInputValues(sf::Text &variable, const sf::Event &event, sf::String &conc
         }
     }
 }
+
+bool checkUsername(sf::Text inpUsername){
+    FILE *users = fopen("users.dat", "ab+"); // open file
+    User userRecord;
+    if (users == NULL){ 
+        cout << "Error while opening users.dat";
+        return false;
+    }
+    while (fread(&userRecord, sizeof(User), 1, users)){ // search username
+        if (strcmp(inpUsername.getString().toAnsiString().c_str(), userRecord.username)==0){
+            fclose(users);
+            return false;
+        }
+    }
+    fclose(users);
+    return true;
+}
+
+// void writeUser(sf::Text inpUsername, sf::Text inpPass, sf::Text inpConfPass){
+//     FILE *users = fopen("users.bin", "ab+");
+//     User userRecord;
+//     strcpy(userRecord.username, inpUsername.getString().toAnsiString().c_str());
+//     strcpy(userRecord.username, inpPass.getString().toAnsiString().c_str());
+// }
