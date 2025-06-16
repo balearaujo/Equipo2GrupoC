@@ -3,7 +3,26 @@
 using namespace std;
 using namespace sf;
 
+struct User{
+    char name[16];
+    int score;
+    int dd;
+    int mm;
+    int aa;
+};
+
 int main() {
+    User data;
+    FILE *users;
+
+    users = fopen("users.dat","rb");
+
+    if(users==NULL){
+        cout << "Error";
+        return 1;
+    }
+
+
     RenderWindow window(sf::VideoMode({825, 800}), "Ranking"); // creates the 825x800 window
 
     // TITLE
@@ -14,10 +33,10 @@ int main() {
 
     // MARGIN
     RectangleShape margin;
-    margin.setSize(Vector2f(702,550)); // width, height
+    margin.setSize(Vector2f(702,504)); // width, height
     margin.setFillColor(Color(255,255,255,150));
     margin.setOrigin(margin.getSize() / 2.f); // center the origin
-    margin.setPosition({825 / 2.f, 449}); // x,y
+    margin.setPosition({825 / 2.f, 425}); // x,y
 
     // HEADER ROW
     RectangleShape headerRow;
@@ -37,11 +56,11 @@ int main() {
     user.setFillColor(sf::Color(255, 255, 255, 150));
     Text score(font, "Score", 30); 
     score.setOrigin({150,40}); 
-    score.setPosition({600, 220}); 
+    score.setPosition({575, 220}); 
     score.setFillColor(sf::Color(255, 255, 255, 150));
     Text date(font, "Date", 30); 
     date.setOrigin({150,40}); 
-    date.setPosition({815, 220}); 
+    date.setPosition({775, 220}); 
     date.setFillColor(sf::Color(255, 255, 255, 150));
 
     vector<RectangleShape> rows;
@@ -53,6 +72,52 @@ int main() {
         row.setPosition({825 / 2.f, 248.0f + i * 45.0f}); // posición vertical
         rows.push_back(row);
     }
+
+    int page = 1;
+    int actualUser = page*10-9;
+    int userEnd = page*10;
+    vector<Text> ranks;
+    vector<Text> usernames;
+    vector<Text> scores;
+    vector<Text> dates;
+
+    while (fread(&data,sizeof(User),1,users) && actualUser <= userEnd){
+        Text rank(font, to_string(actualUser), 32);
+        rank.setOrigin({150,40});
+        rank.setPosition({230, 270.0f + (actualUser-1) * 45.0f});
+        if (actualUser == 1){
+            rank.setFillColor(Color(255, 215, 0)); // golden
+        }
+        ranks.push_back(rank);
+
+        Text username(font, data.name, 32);
+        username.setOrigin({150,40});
+        username.setPosition({280, 270.0f + (actualUser-1) * 45.0f});
+        if (actualUser == 1){
+            username.setFillColor(Color(255, 215, 0));
+        }
+        usernames.push_back(username);
+
+        Text score(font, to_string(data.score), 32);
+        score.setOrigin({150,40});
+        score.setPosition({575, 270.0f + (actualUser-1) * 45.0f});
+        if (actualUser == 1){
+            score.setFillColor(Color(255, 215, 0));
+        }
+        scores.push_back(score);
+
+        string dateText = to_string(data.dd) + "-" + to_string(data.mm) + "-" + to_string(data.aa);
+        Text date(font, dateText, 32);
+        date.setOrigin({150,40});
+        date.setPosition({775, 270.0f + (actualUser-1) * 45.0f});
+        if (actualUser == 1){
+            date.setFillColor(Color(255, 215, 0));
+        }
+        dates.push_back(date);
+
+        actualUser++;
+    }
+
 
     // Main loop
     while (window.isOpen()) {
@@ -74,6 +139,18 @@ int main() {
         window.draw(user);
         window.draw(score);
         window.draw(date);
+        for (const auto& rank : ranks) {
+            window.draw(rank);
+        }
+        for (const auto& username : usernames) {
+            window.draw(username);
+        }
+        for (const auto& score : scores) {
+            window.draw(score);
+        }
+        for (const auto& date : dates) {
+            window.draw(date);
+        }
 
         // show what was drawn
         window.display();
