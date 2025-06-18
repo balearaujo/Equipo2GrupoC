@@ -19,7 +19,7 @@ void screenSignUp(){
     sf::String concatConfPass("");
     
     // declaration
-    Font font("assets/ARIAL.TTF");
+    Font font("assets/BurbankBigCondensed-Black.otf");
     Text tTitle(font, "Sign up", 75);
     Text tUsername(font, "Username: ", 50);
     Text tPass(font, "Password: ", 50);
@@ -41,15 +41,15 @@ void screenSignUp(){
     tUsername.setFillColor(Color::White);
     tPass.setFillColor(Color::White);
     tConfPass.setFillColor(Color::White);
-    tWarnings.setFillColor(Color::Black);
-    tWarningPass.setFillColor(Color::Black);
+    tWarnings.setFillColor(Color::Transparent);
+    tWarningPass.setFillColor(Color::Transparent);
     tButtonSU.setFillColor(Color::White);
 
     inpUsername.setFillColor(Color::Green);
     inpPass.setFillColor(Color::Green);
     inpConfPass.setFillColor(Color::Green);
     buttSub.setFillColor(Color(130,130,130));
-    buttSubBorder.setFillColor(Color::Black);
+    buttSubBorder.setFillColor(Color::Transparent);
     
 
     // origin
@@ -82,6 +82,7 @@ void screenSignUp(){
     inpConfPass.setPosition({550, 450});
     buttSub.setPosition({415, 600});
     buttSubBorder.setPosition({415, 600});
+
     
     //extra
     // sf::String test("");
@@ -118,7 +119,7 @@ void screenSignUp(){
                     tUsername.setFillColor(Color::Magenta);
                     tPass.setFillColor(Color::White);
                     tConfPass.setFillColor(Color::White);
-                    buttSubBorder.setFillColor(Color::Black);
+                    buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpUsername, event.value(), concatUser, tWarnings);
                     break;
                 case 1:
@@ -126,15 +127,15 @@ void screenSignUp(){
                     tPass.setFillColor(Color::Magenta);
                     tUsername.setFillColor(Color::White);
                     tConfPass.setFillColor(Color::White);
-                    buttSubBorder.setFillColor(Color::Black);
+                    buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpPass, event.value(), concatPass, tWarnings);
                     break;
                 case 2:
                     // optText[posAux] = 1;
                     tConfPass.setFillColor(Color::Magenta);
                     tPass.setFillColor(Color::White);
-                        tUsername.setFillColor(Color::White);
-                    buttSubBorder.setFillColor(Color::Black);
+                    tUsername.setFillColor(Color::White);
+                    buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpConfPass, event.value(), concatConfPass, tWarnings);
                     break;
                 case 3:
@@ -144,14 +145,21 @@ void screenSignUp(){
                     buttSubBorder.setFillColor(Color::Red);
                     if (Keyboard::isKeyPressed(Keyboard::Key::Enter)){
                         if (checkUsername(inpUsername)){ // check if the username is available
-                            if (inpPass.getString().toAnsiString().compare(inpConfPass.getString().toAnsiString())){ // convert sf strings to std string and compare
+                            if (checkPassword(inpPass, inpConfPass)){ // convert sf strings to std string and compare
                                 tWarningPass.setString("Passwords must match!"); 
                                 tWarningPass.setFillColor(Color::Yellow);
-                                cout << "a";
-                            } else{ // user available and same password
-                                tWarningPass.setFillColor(Color::Black);
-                                cout << "b";
-                            }
+                            } else{
+                                if (inpPass.getString().getSize()<8 || inpUsername.getString().getSize()<8){
+                                    tWarningPass.setString("Username / password must be at least 8 characters");
+                                    tWarningPass.setFillColor(Color::Yellow);
+                                } else{ // user available, same password, correct lenght
+                                    tWarningPass.setFillColor(Color::Transparent);
+                                    writeUser(inpUsername, inpPass);
+                                    cout << "User " << inpUsername.getString().toAnsiString() << " writed ";
+                                    window.close();
+                                    mainMenuScreen();
+                                }
+                            }   
                         } else{ // username not available
                             tWarningPass.setString("Username not available");
                             tWarningPass.setFillColor(Color::Yellow);
@@ -193,8 +201,10 @@ void setInputValues(sf::Text &variable, const sf::Event &event, sf::String &conc
                 cout << "special character ";
                 tWarnings.setFillColor(Color::Yellow);    
             } else{
-                if (typedText->unicode!=8){
-                    concatAux += typedText->unicode;
+                if (variable.getString().getSize()<16){
+                    if (typedText->unicode!=8){
+                        concatAux += typedText->unicode;
+                    }
                 }
                 // verificar si es tecla borrar y que tenga uno o mas caracteres
                 if (concatAux.getSize()>0 && Keyboard::isKeyPressed(Keyboard::Key::Backspace)){
@@ -203,7 +213,7 @@ void setInputValues(sf::Text &variable, const sf::Event &event, sf::String &conc
                 }
                 variable.setString(concatAux);
                 cout << variable.getString().toAnsiString();
-                tWarnings.setFillColor(Color::Black);    
+                tWarnings.setFillColor(Color::Transparent);    
             }
         }
     }
@@ -226,9 +236,34 @@ bool checkUsername(sf::Text inpUsername){
     return true;
 }
 
-// void writeUser(sf::Text inpUsername, sf::Text inpPass, sf::Text inpConfPass){
-//     FILE *users = fopen("users.bin", "ab+");
-//     User userRecord;
-//     strcpy(userRecord.username, inpUsername.getString().toAnsiString().c_str());
-//     strcpy(userRecord.username, inpPass.getString().toAnsiString().c_str());
-// }
+bool checkPassword(sf::Text inpPass, sf::Text inpConfPass){
+    return (inpPass.getString().toAnsiString().compare(inpConfPass.getString().toAnsiString()));
+}
+
+void writeUser(sf::Text inpUsername, sf::Text inpPass){
+    User newUser;
+    int id;
+    FILE *users = fopen("users.dat", "ab+");
+    if (users==NULL){
+        cout << "Error while opening users.dat";
+        return;
+    }
+    id = assignID(users);
+    newUser.idUser = id;
+    strcpy(newUser.username , inpUsername.getString().toAnsiString().c_str());
+    strcpy(newUser.password, inpPass.getString().toAnsiString().c_str());
+    newUser.nGames = 0;
+    fwrite(&newUser, sizeof(User), 1, users);
+    fclose(users);
+}
+
+
+int assignID(FILE *users){
+    unsigned int fileSize;
+    int idUs;
+    fseek(users, 0, SEEK_END); // go to the end of the file
+    fileSize = ftell(users); // return size in bytes
+    idUs = fileSize / sizeof(User); // total users
+    rewind(users);
+    return ++idUs;
+}

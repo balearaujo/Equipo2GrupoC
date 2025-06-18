@@ -4,11 +4,17 @@ using namespace std;
 using namespace sf;
 
 int main() {
+    mainMenuScreen();
+
+    return 0;
+}
+
+void mainMenuScreen(){
     RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!", State::Windowed);
     Image icon("assets/logo.png");
     window.setIcon(icon);
     
-    Font font("assets/ARIAL.TTF");
+    Font font("assets/BurbankBigCondensed-Black.otf");
     Text title(font, "Fabulous Fred!", 100);
     Text optLogIn(font, "Log in", 50);
     Text optSignUp(font, "Sign up", 50);
@@ -54,15 +60,13 @@ int main() {
 
             if (Keyboard::isKeyPressed(Keyboard::Key::Enter)){
                 if (options[0] == 1){ // log in
-                    window.setVisible(false);
+                    window.close();
                     screenLogIn();
-                    window.setVisible(true);
                 }
 
                 if (options[1] == 1){ // sign up
-                    window.setVisible(false);
+                    window.close();
                     screenSignUp();
-                    window.setVisible(true);
                 }
             }
         }
@@ -72,7 +76,5 @@ int main() {
         window.draw(optSignUp);
         window.draw(optLogIn);
         window.display();
-    }
-    
-    return 0;
+    }    
 }

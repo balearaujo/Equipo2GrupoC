@@ -27,8 +27,9 @@ struct User{
 void screenSignUp();
 void setInputValues(sf::Text &, const sf::Event &, sf::String &, sf::Text &);
 bool checkUsername(sf::Text);
-void writeUser(sf::Text, sf::Text, sf::Text);
-
+bool checkPassword(sf::Text, sf::Text);
+void writeUser(sf::Text, sf::Text);
+int assignID(FILE *);
 
 
 
@@ -37,4 +38,6 @@ void screenLogIn();
 
 
 
+// main.cpp
+void mainMenuScreen();
 #endif
