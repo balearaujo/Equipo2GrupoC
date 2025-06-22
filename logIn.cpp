@@ -5,6 +5,8 @@ using namespace sf;
 void screenLogIn(){
     RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred!");
     window.setTitle("Log in");
+    Image icon("assets/logo.png");
+    window.setIcon(icon);
     
     while (window.isOpen())
     {

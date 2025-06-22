@@ -18,6 +18,7 @@ void mainMenuScreen(){
     Text title(font, "Fabulous Fred!", 100);
     Text optLogIn(font, "Log in", 50);
     Text optSignUp(font, "Sign up", 50);
+    
     //title
     title.setFillColor(Color::Blue);
     title.setOrigin({150,40}); // set the origin in the middle

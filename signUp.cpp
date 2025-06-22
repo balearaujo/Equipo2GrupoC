@@ -8,8 +8,21 @@ using namespace std;
 void screenSignUp(){
     RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!");
     window.setTitle("Sign up");
+
+    // logo
     Image icon("assets/logo.png");
     window.setIcon(icon);
+    
+    // background
+    Texture backgTexture;
+    if (!backgTexture.loadFromFile("assets/back.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+
+    Sprite backgSprite(backgTexture); 
+    float scaleX = float(window.getSize().x) / backgTexture.getSize().x;
+    float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
+    backgSprite.setScale({scaleX, scaleY});
 
     // 0 = username, 1 = password, 2 = confirm password, 3 = sign up button
     int posAux{0};
@@ -20,16 +33,15 @@ void screenSignUp(){
     
     // declaration
     Font font("assets/BurbankBigCondensed-Black.otf");
-    Text tTitle(font, "Sign up", 75);
-    Text tUsername(font, "Username: ", 50);
-    Text tPass(font, "Password: ", 50);
-    Text tConfPass(font, "Confirm password:", 50);
-    Text tWarnings(font, "Special characters not allowed!", 30);
+    Text tTitle(font, "SIGN UP", 75);
+    Text tUsername(font, "USERNAME: ", 50);
+    Text tPass(font, "PASSWORD: ", 50);
+    Text tConfPass(font, "CONFIRM PASSWORD:", 50);
+    Text tWarnings(font, "SPECIAL CHARACTERS NOT ALLOWED!", 30);
     Text tWarningPass(font, "", 30);
-    Text tButtonSU(font, "Sign Up", 50);
+    Text tButtonSU(font, "SIGN UP", 50);
     RectangleShape buttSub(Vector2f{350, 75});
     RectangleShape buttSubBorder(Vector2f{370, 90});
-    
     
     Text inpUsername(font, "", 50);
     Text inpPass(font, "", 50);
@@ -37,7 +49,7 @@ void screenSignUp(){
     
 
     // color
-    tTitle.setFillColor(Color::Red);
+    tTitle.setFillColor(Color::White);
     tUsername.setFillColor(Color::White);
     tPass.setFillColor(Color::White);
     tConfPass.setFillColor(Color::White);
@@ -45,10 +57,10 @@ void screenSignUp(){
     tWarningPass.setFillColor(Color::Transparent);
     tButtonSU.setFillColor(Color::White);
 
-    inpUsername.setFillColor(Color::Green);
-    inpPass.setFillColor(Color::Green);
-    inpConfPass.setFillColor(Color::Green);
-    buttSub.setFillColor(Color(130,130,130));
+    inpUsername.setFillColor(Color(0, 65, 193 )); // light blue
+    inpPass.setFillColor(Color(0, 65, 193 ));
+    inpConfPass.setFillColor(Color(0, 65, 193 ));
+    buttSub.setFillColor(Color(89, 111, 173)); 
     buttSubBorder.setFillColor(Color::Transparent);
     
 
@@ -69,21 +81,41 @@ void screenSignUp(){
     
 
     // position
-    tTitle.setPosition({350, 100});
-    tUsername.setPosition({100, 250});
-    tPass.setPosition({100, 350});
-    tConfPass.setPosition({100, 450});
+    tTitle.setPosition({825/2, 100});
+    tUsername.setPosition({120, 250});
+    tPass.setPosition({120, 350});
+    tConfPass.setPosition({120, 450});
     tWarnings.setPosition({100, 700});
     tWarningPass.setPosition({100, 750});
-    tButtonSU.setPosition({410, 585});
+    tButtonSU.setPosition({825/2, 585});
 
     inpUsername.setPosition({350, 250});
     inpPass.setPosition({350, 350});
-    inpConfPass.setPosition({550, 450});
-    buttSub.setPosition({415, 600});
-    buttSubBorder.setPosition({415, 600});
+    inpConfPass.setPosition({505, 450});
+    buttSub.setPosition({825/2, 600});
+    buttSubBorder.setPosition({825/2, 600});
 
-    
+    //design
+    vector<RectangleShape> inpBoxes;
+    for (int i = 0; i<3; i++){
+        RectangleShape inpBox;
+        inpBox.setSize(Vector2f({760, 75}));
+        inpBox.setFillColor(Color(130,130,130));
+        inpBox.setOrigin({(inpBox.getSize().x) / 2, (inpBox.getSize().y) / 2});
+        inpBox.setPosition({825/2, 265.f + i * 100.f});
+        inpBoxes.push_back(inpBox);
+    }
+
+    vector<RectangleShape> inpBoxesBorder;
+    for (int i = 0; i<3; i++){
+        RectangleShape inpBoxBor;
+        inpBoxBor.setSize(Vector2f({765, 80}));
+        inpBoxBor.setFillColor(Color::White);
+        inpBoxBor.setOrigin({(inpBoxBor.getSize().x) / 2, (inpBoxBor.getSize().y) / 2});
+        inpBoxBor.setPosition({825/2, 265.f + i * 100.f});
+        inpBoxesBorder.push_back(inpBoxBor);
+    }
+
     //extra
     // sf::String test("");
 
@@ -96,6 +128,7 @@ void screenSignUp(){
             
             if (Keyboard::isKeyPressed(Keyboard::Key::Escape)){
                 window.close();
+                mainMenuScreen();
             }
 
             // adjust posAux to handle "input" textbox
@@ -115,30 +148,31 @@ void screenSignUp(){
             
             switch(posAux){ // change colors depending on the position, call function setInputValue to grab typed characters
                 case 0:
-                    // optText[posAux] = 1; 
-                    tUsername.setFillColor(Color::Magenta);
+                    // posAux = 0, username 
+                    tUsername.setFillColor(Color(46, 71, 140));
                     tPass.setFillColor(Color::White);
                     tConfPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpUsername, event.value(), concatUser, tWarnings);
                     break;
                 case 1:
-                    // optText[posAux] = 1;
-                    tPass.setFillColor(Color::Magenta);
+                    // posAux = 1, password
+                    tPass.setFillColor(Color(46, 71, 140 )); // dark blue
                     tUsername.setFillColor(Color::White);
                     tConfPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpPass, event.value(), concatPass, tWarnings);
                     break;
                 case 2:
-                    // optText[posAux] = 1;
-                    tConfPass.setFillColor(Color::Magenta);
+                    // posAux = 2, confirm password
+                    tConfPass.setFillColor(Color(46, 71, 140 ));
                     tPass.setFillColor(Color::White);
                     tUsername.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpConfPass, event.value(), concatConfPass, tWarnings);
                     break;
                 case 3:
+                    // posAux = 3, button
                     tConfPass.setFillColor(Color::White);
                     tPass.setFillColor(Color::White);
                     tUsername.setFillColor(Color::White);
@@ -174,7 +208,14 @@ void screenSignUp(){
             }
         }
         window.clear(Color::Black);
+        window.draw(backgSprite);
         window.draw(tTitle);
+        for (const auto& inpBoxBor : inpBoxesBorder){
+            window.draw(inpBoxBor);
+        }
+        for (const auto& inpBox : inpBoxes){
+            window.draw(inpBox);
+        }
         window.draw(tUsername);
         window.draw(tPass);
         window.draw(tConfPass); 
