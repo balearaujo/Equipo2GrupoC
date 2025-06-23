@@ -105,23 +105,23 @@ int main() {
     tPrevBtn.setPosition({163, 725});
 
 
-    // HOME BUTTON
-    RectangleShape homeBtn;
-    homeBtn.setSize(Vector2f(300,40));
-    homeBtn.setFillColor(Color(253,114,114));
-    homeBtn.setOrigin({(homeBtn.getSize().x)/2 , (homeBtn.getSize().y)/2});
-    homeBtn.setPosition({412, 730}); // x,y
+    // menu BUTTON
+    RectangleShape menuBtn;
+    menuBtn.setSize(Vector2f(300,40));
+    menuBtn.setFillColor(Color(253,114,114));
+    menuBtn.setOrigin({(menuBtn.getSize().x)/2 , (menuBtn.getSize().y)/2});
+    menuBtn.setPosition({412, 730}); // x,y
 
-    RectangleShape homeBtnBorder;
-    homeBtnBorder.setSize(Vector2f(320,55));
-    homeBtnBorder.setFillColor(Color::Red);
-    homeBtnBorder.setOrigin({(homeBtnBorder.getSize().x)/2 , (homeBtnBorder.getSize().y)/2});
-    homeBtnBorder.setPosition({412, 730}); // x,y
+    RectangleShape menuBtnBorder;
+    menuBtnBorder.setSize(Vector2f(320,55));
+    menuBtnBorder.setFillColor(Color::Red);
+    menuBtnBorder.setOrigin({(menuBtnBorder.getSize().x)/2 , (menuBtnBorder.getSize().y)/2});
+    menuBtnBorder.setPosition({412, 730}); // x,y
 
-    Text tHomeBtn(font, "HOME", 40);
-    tHomeBtn.setFillColor(Color::White);
-    tHomeBtn.setOrigin({75, 20});
-    tHomeBtn.setPosition({440, 725});
+    Text tMenuBtn(font, "MENU", 40);
+    tMenuBtn.setFillColor(Color::White);
+    tMenuBtn.setOrigin({75, 20});
+    tMenuBtn.setPosition({440, 725});
 
 
     // NEXT BUTTON
@@ -207,6 +207,7 @@ int main() {
     // 0 = prev, 1 = menu, 2 = next
     int posAux = 1;
     bool needsUpdate = false;
+    bool enterPressed = false;
 
     // Main loop
     while (window.isOpen()) {
@@ -251,24 +252,26 @@ int main() {
                     prevBtnBorder.setFillColor(Color::Red);
 
                     // rest stay default
-                    homeBtn.setFillColor(Color(130,130,130));
-                    homeBtnBorder.setFillColor(Color::Black);
+                    menuBtn.setFillColor(Color(130,130,130));
+                    menuBtnBorder.setFillColor(Color::Black);
                     nextBtn.setFillColor(Color(130,130,130));
                     nextBtnBorder.setFillColor(Color::Black);
 
                     if (Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
-                        if (actualPage > 1){
+                        if (!enterPressed && actualPage > 1) {
                             actualPage--;
                             needsUpdate = true;
-                            window.close();
+                            enterPressed = true;
                         }
+                    } else {
+                        enterPressed = false;
                     }
                     break;
 
                 case 1:
-                    // HOME button selected
-                    homeBtn.setFillColor(Color(253,114,114));
-                    homeBtnBorder.setFillColor(Color::Red);
+                    // menu button selected
+                    menuBtn.setFillColor(Color(253,114,114));
+                    menuBtnBorder.setFillColor(Color::Red);
 
                     // rest stay default
                     prevBtn.setFillColor(Color(130,130,130));
@@ -277,7 +280,7 @@ int main() {
                     nextBtnBorder.setFillColor(Color::Black);
 
                     if (Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
-                        // HOME action
+                        // menu action
                     }
                     break;
 
@@ -289,18 +292,20 @@ int main() {
                     // rest stay default
                     prevBtn.setFillColor(Color(130,130,130));
                     prevBtnBorder.setFillColor(Color::Black);
-                    homeBtn.setFillColor(Color(130,130,130));
-                    homeBtnBorder.setFillColor(Color::Black);
-                    if (Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
-                        if (actualPage < lastPage){
+                    menuBtn.setFillColor(Color(130,130,130));
+                    menuBtnBorder.setFillColor(Color::Black);
+                     if (Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
+                        if (!enterPressed && actualPage < lastPage) {
                             actualPage++;
                             needsUpdate = true;
-                            window.close();
+                            enterPressed = true;
                         }
+                    } else {
+                        enterPressed = false;
                     }
                     break;
             }
-        }
+        }   
 
         actualUser = actualPage*10-9;
         lastUserPage = actualPage*10;
@@ -397,9 +402,9 @@ int main() {
             window.draw(tPrevBtn);
         }
 
-        window.draw(homeBtnBorder);
-        window.draw(homeBtn);
-        window.draw(tHomeBtn); 
+        window.draw(menuBtnBorder);
+        window.draw(menuBtn);
+        window.draw(tMenuBtn); 
 
         if (actualPage != lastPage){  
             window.draw(nextBtnBorder);
