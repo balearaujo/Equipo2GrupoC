@@ -52,7 +52,7 @@ void screenLogIn(){
 
     inpUsername.setFillColor(Color(155, 160, 182)); // light blue
     inpPass.setFillColor(Color(155, 160, 182));
-    buttSub.setFillColor(Color(89, 111, 173)); 
+    buttSub.setFillColor(Color(130,130,130)); 
     buttSubBorder.setFillColor(Color::Transparent);
     
     // origin
@@ -74,12 +74,12 @@ void screenLogIn(){
     tPass.setPosition({190, 400});
     tWarnings.setPosition({100, 720});
     tWarningPass.setPosition({100, 760});
-    tButtonLI.setPosition({850/2, 635});
+    tButtonLI.setPosition({850/2, 610});
 
     inpUsername.setPosition({215, 290});
     inpPass.setPosition({215, 450});
-    buttSub.setPosition({825/2, 650});
-    buttSubBorder.setPosition({825/2, 650});
+    buttSub.setPosition({825/2, 625});
+    buttSubBorder.setPosition({825/2, 625});
 
     // design
     vector<RectangleShape> inpBoxes; // input boxes
@@ -102,7 +102,7 @@ void screenLogIn(){
         inpBoxesBorder.push_back(inpBoxBor);
     }
 
-    
+
     while (window.isOpen())
     {
         while (const std::optional event = window.pollEvent())
@@ -115,6 +115,9 @@ void screenLogIn(){
                     mainMenuScreen();
                 }
             }
+
+            cout << "hola ";
+
             if (posAux >= 0 && posAux<2){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
                     posAux++;
