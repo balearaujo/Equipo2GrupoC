@@ -18,35 +18,33 @@ void screenSignUp(){
     if (!backgTexture.loadFromFile("assets/back.png")) {
         cout << "Image couldnt be loaded" << endl;
     }
-
     Sprite backgSprite(backgTexture); 
     float scaleX = float(window.getSize().x) / backgTexture.getSize().x;
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
     backgSprite.setScale({scaleX, scaleY});
 
     // 0 = username, 1 = password, 2 = confirm password, 3 = sign up button
-    int posAux{0};
-    bool button = false;
-    sf::String concatUser("");
-    sf::String concatPass("");
-    sf::String concatConfPass("");
+    int posAux{0};  
     
     // declaration
     Font font("assets/BurbankBigCondensed-Black.otf");
-    Text tTitle(font, "SIGN UP", 75);
-    Text tUsername(font, "USERNAME: ", 50);
-    Text tPass(font, "PASSWORD: ", 50);
-    Text tConfPass(font, "CONFIRM PASSWORD:", 50);
+    Text tTitle(font, "SIGN UP", 90);
+    Text tUsername(font, "USERNAME", 30);
+    Text tPass(font, "PASSWORD", 30);
+    Text tConfPass(font, "CONFIRM PASSWORD", 30);
     Text tWarnings(font, "SPECIAL CHARACTERS NOT ALLOWED!", 30);
     Text tWarningPass(font, "", 30);
     Text tButtonSU(font, "SIGN UP", 50);
-    RectangleShape buttSub(Vector2f{350, 75});
-    RectangleShape buttSubBorder(Vector2f{370, 90});
     
+    sf::String concatUser("");
+    sf::String concatPass("");
+    sf::String concatConfPass("");
     Text inpUsername(font, "", 50);
     Text inpPass(font, "", 50);
     Text inpConfPass(font, "", 50);
     
+    RectangleShape buttSub(Vector2f{350, 75});
+    RectangleShape buttSubBorder(Vector2f{370, 90});
 
     // color
     tTitle.setFillColor(Color::White);
@@ -57,20 +55,20 @@ void screenSignUp(){
     tWarningPass.setFillColor(Color::Transparent);
     tButtonSU.setFillColor(Color::White);
 
-    inpUsername.setFillColor(Color(0, 65, 193 )); // light blue
-    inpPass.setFillColor(Color(0, 65, 193 ));
-    inpConfPass.setFillColor(Color(0, 65, 193 ));
+    inpUsername.setFillColor(Color(155, 160, 182)); // light blue
+    inpPass.setFillColor(Color(155, 160, 182));
+    inpConfPass.setFillColor(Color(155, 160, 182));
     buttSub.setFillColor(Color(89, 111, 173)); 
     buttSubBorder.setFillColor(Color::Transparent);
     
 
     // origin
-    tTitle.setOrigin({90, 30});
-    tUsername.setOrigin({75, 20});
-    tPass.setOrigin({75, 20});
-    tConfPass.setOrigin({75, 20});
-    tWarnings.setOrigin({64, 17});
-    tWarningPass.setOrigin({64, 17});
+    tTitle.setOrigin({100, 40});
+    tUsername.setOrigin({65, 17});
+    tPass.setOrigin({65, 17});
+    tConfPass.setOrigin({65, 17});
+    tWarnings.setOrigin({65, 17});
+    tWarningPass.setOrigin({65, 17});
     tButtonSU.setOrigin({75, 20});
     
     inpUsername.setOrigin({75,20});
@@ -81,56 +79,53 @@ void screenSignUp(){
     
 
     // position
-    tTitle.setPosition({825/2, 100});
-    tUsername.setPosition({120, 250});
-    tPass.setPosition({120, 350});
-    tConfPass.setPosition({120, 450});
-    tWarnings.setPosition({100, 700});
-    tWarningPass.setPosition({100, 750});
-    tButtonSU.setPosition({825/2, 585});
+    tTitle.setPosition({825/2, 85});
+    tUsername.setPosition({190, 205}); 
+    tPass.setPosition({190, 340});
+    tConfPass.setPosition({190, 475});
+    tWarnings.setPosition({100, 720});
+    tWarningPass.setPosition({100, 760});
+    tButtonSU.setPosition({825/2, 635});
 
-    inpUsername.setPosition({350, 250});
-    inpPass.setPosition({350, 350});
-    inpConfPass.setPosition({505, 450});
-    buttSub.setPosition({825/2, 600});
-    buttSubBorder.setPosition({825/2, 600});
+    inpUsername.setPosition({215, 255});
+    inpPass.setPosition({215, 390});
+    inpConfPass.setPosition({215, 525});
+    buttSub.setPosition({825/2, 650});
+    buttSubBorder.setPosition({825/2, 650});
 
-    //design
-    vector<RectangleShape> inpBoxes;
+    // design 
+    vector<RectangleShape> inpBoxes; // boxes
     for (int i = 0; i<3; i++){
         RectangleShape inpBox;
-        inpBox.setSize(Vector2f({760, 75}));
-        inpBox.setFillColor(Color(130,130,130));
+        inpBox.setSize(Vector2f({565, 75}));
+        inpBox.setFillColor(Color(19, 20, 40));
         inpBox.setOrigin({(inpBox.getSize().x) / 2, (inpBox.getSize().y) / 2});
-        inpBox.setPosition({825/2, 265.f + i * 100.f});
+        inpBox.setPosition({825/2, 265.f + i * 135.f});
         inpBoxes.push_back(inpBox);
     }
-
-    vector<RectangleShape> inpBoxesBorder;
+    vector<RectangleShape> inpBoxesBorder; // border
     for (int i = 0; i<3; i++){
         RectangleShape inpBoxBor;
-        inpBoxBor.setSize(Vector2f({765, 80}));
+        inpBoxBor.setSize(Vector2f({570, 80}));
         inpBoxBor.setFillColor(Color::White);
         inpBoxBor.setOrigin({(inpBoxBor.getSize().x) / 2, (inpBoxBor.getSize().y) / 2});
-        inpBoxBor.setPosition({825/2, 265.f + i * 100.f});
+        inpBoxBor.setPosition({825/2, 265.f + i * 135.f});
         inpBoxesBorder.push_back(inpBoxBor);
     }
 
-    //extra
-    // sf::String test("");
 
+    // MAIN WINDOW
     while (window.isOpen()){
         while (const std::optional event = window.pollEvent()){
             
-            if (event->is<sf::Event::Closed>()) {
+            if (event->is<sf::Event::Closed>()){
                 window.close();
+            } else if (const auto* key = event->getIf<Event::KeyPressed>()){
+                if (key->scancode == Keyboard::Scancode::Escape){
+                    window.close();
+                    mainMenuScreen();
+                }
             }
-            
-            if (Keyboard::isKeyPressed(Keyboard::Key::Escape)){
-                window.close();
-                mainMenuScreen();
-            }
-
             // adjust posAux to handle "input" textbox
             if (posAux>=0 && posAux<3){ // posAux between 0-2
                 if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
@@ -149,64 +144,72 @@ void screenSignUp(){
             switch(posAux){ // change colors depending on the position, call function setInputValue to grab typed characters
                 case 0:
                     // posAux = 0, username 
-                    tUsername.setFillColor(Color(46, 71, 140));
+                    tUsername.setFillColor(Color(102, 179, 255));
                     tPass.setFillColor(Color::White);
                     tConfPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpUsername, event.value(), concatUser, tWarnings);
                     break;
+        
                 case 1:
                     // posAux = 1, password
-                    tPass.setFillColor(Color(46, 71, 140 )); // dark blue
+                    tPass.setFillColor(Color(102, 179, 255)); // dark blue
                     tUsername.setFillColor(Color::White);
                     tConfPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpPass, event.value(), concatPass, tWarnings);
                     break;
+            
                 case 2:
                     // posAux = 2, confirm password
-                    tConfPass.setFillColor(Color(46, 71, 140 ));
+                    tConfPass.setFillColor(Color(102, 179, 255));
                     tPass.setFillColor(Color::White);
                     tUsername.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpConfPass, event.value(), concatConfPass, tWarnings);
                     break;
+                
                 case 3:
                     // posAux = 3, button
                     tConfPass.setFillColor(Color::White);
                     tPass.setFillColor(Color::White);
                     tUsername.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Red);
-                    if (Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        if (checkUsername(inpUsername)){ // check if the username is available
-                            if (checkPassword(inpPass, inpConfPass)){ // convert sf strings to std string and compare
-                                tWarningPass.setString("Passwords must match!"); 
-                                tWarningPass.setFillColor(Color::Yellow);
-                            } else{
-                                if (inpPass.getString().getSize()<8 || inpUsername.getString().getSize()<8){
-                                    tWarningPass.setString("Username / password must be at least 8 characters");
+
+                    if (const auto* key = event->getIf<Event::KeyPressed>()){
+                        if (key->scancode == Keyboard::Scancode::Enter){
+                            if (checkUsername(inpUsername)){ // check if the username is available
+                                if (checkPassword(inpPass, inpConfPass)){ // convert sf strings to std string and compare
+                                    tWarningPass.setString("PASSWORDS MUST MATCH!"); 
                                     tWarningPass.setFillColor(Color::Yellow);
-                                } else{ // user available, same password, correct lenght
-                                    tWarningPass.setFillColor(Color::Transparent);
-                                    writeUser(inpUsername, inpPass);
-                                    cout << "User " << inpUsername.getString().toAnsiString() << " writed ";
-                                    window.close();
-                                    mainMenuScreen();
-                                }
-                            }   
-                        } else{ // username not available
-                            tWarningPass.setString("Username not available");
-                            tWarningPass.setFillColor(Color::Yellow);
+                                } else{
+                                    if (inpPass.getString().getSize()<8 || inpUsername.getString().getSize()<8){
+                                        tWarningPass.setString("USERNAME / PASSWORD MUST BE AT LEAST 8 CHARACTERS");
+                                        tWarningPass.setFillColor(Color::Yellow);
+                                    } else{ // user available, same password, correct lenght
+                                        tWarningPass.setFillColor(Color::Transparent);
+                                        writeUser(inpUsername, inpPass);
+                                        cout << "User " << inpUsername.getString().toAnsiString() << " writed ";
+                                        window.close();
+                                        mainMenuScreen();
+                                    }
+                                }   
+                            } else{ // username not available
+                                tWarningPass.setString("USERNAME NOT AVAILABLE!");
+                                tWarningPass.setFillColor(Color::Yellow);
+                            }
                         }
                     }
-
             }
+    
             if (!(inpUsername.getString().isEmpty()) && !(inpPass.getString().isEmpty()) && !(inpConfPass.getString().isEmpty())){
                 buttSub.setFillColor(Color(253,114,114)); // light red
             } else {
                 buttSub.setFillColor(Color(130,130,130)); // gray
             }
+
         }
+        
         window.clear(Color::Black);
         window.draw(backgSprite);
         window.draw(tTitle);
