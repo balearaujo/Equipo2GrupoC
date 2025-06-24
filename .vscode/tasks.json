@@ -11,6 +11,7 @@
 				"main.cpp",
 				"logIn.cpp",
 				"signUp.cpp", // add all cpp files needed
+				"game.cpp", 
 				"-I${workspaceFolder}/include",
 				"-DSFML_STATIC",
 				"-o",

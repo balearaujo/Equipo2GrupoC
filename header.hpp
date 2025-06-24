@@ -45,4 +45,10 @@ bool isValidUser(sf::Text, sf::Text);
 
 // main.cpp
 void mainMenuScreen();
+
+
+
+// game.cpp
+void gameScreen();
+
 #endif

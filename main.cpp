@@ -36,7 +36,7 @@ void mainMenuScreen(){
     RectangleShape buttBorderLI(Vector2f{390, 105});
     RectangleShape buttSU(Vector2f{370, 90});
     RectangleShape buttBorderSU(Vector2f{390, 105});
-
+    
     // color
     tTitle.setFillColor(Color::White);
     tLogIn.setFillColor({Color::White});
@@ -127,7 +127,7 @@ void mainMenuScreen(){
                 if (key->scancode == Keyboard::Scancode::Enter){
                     if (posAux==0){ // log in
                         window.close();
-                        screenLogIn();
+                        gameScreen();
                     }
                     if (posAux==1){ // sign up
                         window.close();
