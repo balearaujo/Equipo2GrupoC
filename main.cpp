@@ -57,13 +57,13 @@ void screenMainMenu(){
     
     // position
     tTitle.setLineSpacing(0.8);
-    tTitle.setPosition({825/2, 200});
-    tLogIn.setPosition({825/2, 450}); 
-    tSignUp.setPosition({825/2, 630});
-    buttLI.setPosition({825/2, 470});
-    buttBorderLI.setPosition({825/2, 470});
-    buttSU.setPosition({825/2, 650});
-    buttBorderSU.setPosition({825/2, 650});
+    tTitle.setPosition({825/2, 225});
+    tLogIn.setPosition({420, 427}); 
+    tSignUp.setPosition({405, 552});
+    buttLI.setPosition({825/2, 445});
+    buttBorderLI.setPosition({825/2, 445});
+    buttSU.setPosition({825/2, 570});
+    buttBorderSU.setPosition({825/2, 570});
     
     // animation
     bool animate = true;

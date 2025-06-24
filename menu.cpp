@@ -102,13 +102,13 @@ void screenMenu(){
     logOutBtn.setSize(Vector2f(300,60));
     logOutBtn.setFillColor(Color(75,75,75));
     logOutBtn.setOrigin({(logOutBtn.getSize().x)/2 , (logOutBtn.getSize().y)/2});
-    logOutBtn.setPosition({412, 725}); // x,y
+    logOutBtn.setPosition({400, 725}); // x,y
 
     RectangleShape logOutBtnBorder;
     logOutBtnBorder.setSize(Vector2f(320,75));
     logOutBtnBorder.setFillColor(Color::Black);
     logOutBtnBorder.setOrigin({(logOutBtnBorder.getSize().x)/2 , (logOutBtnBorder.getSize().y)/2});
-    logOutBtnBorder.setPosition({412, 725}); // x,y
+    logOutBtnBorder.setPosition({400, 725}); // x,y
 
     Text tlogOutBtn(font, "LOG OUT", 45);
     tlogOutBtn.setFillColor(Color::White);

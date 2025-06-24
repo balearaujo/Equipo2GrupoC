@@ -85,17 +85,17 @@ void screenLogIn(){
     buttSubBorder.setOrigin({(buttSubBorder.getSize().x)/2 , (buttSubBorder.getSize().y)/2});
 
     // position
-    tTitle.setPosition({825/2, 85});
+    tTitle.setPosition({410, 125});
     tUsername.setPosition({190, 240}); 
     tPass.setPosition({190, 400});
     tWarnings.setPosition({100, 720});
     tWarningPass.setPosition({100, 760});
-    tButtonLI.setPosition({850/2, 610});
+    tButtonLI.setPosition({850/2, 560});
 
     inpUsername.setPosition({215, 290});
     inpPass.setPosition({215, 450});
-    buttSub.setPosition({825/2, 625});
-    buttSubBorder.setPosition({825/2, 625});
+    buttSub.setPosition({825/2, 575});
+    buttSubBorder.setPosition({825/2, 575});
 
     // design
     vector<RectangleShape> inpBoxes; // input boxes

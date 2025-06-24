@@ -97,7 +97,7 @@ void screenSignUp(){
     
 
     // position
-    tTitle.setPosition({825/2, 85});
+    tTitle.setPosition({380, 110});
     tUsername.setPosition({190, 205}); 
     tPass.setPosition({190, 340});
     tConfPass.setPosition({190, 475});
