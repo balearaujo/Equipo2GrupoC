@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "header.hpp"
 using namespace std;
 using namespace sf;
 
@@ -11,9 +12,7 @@ struct User{
     int aa;
 };
 
-
-
-int main() {
+void screenLeaderboard() {
     User data;
     FILE *users;
 
@@ -21,7 +20,7 @@ int main() {
 
     if(users==NULL){
         cout << "Error";
-        return 1;
+        return;
     }
 
     RenderWindow window(sf::VideoMode({825, 800}), "Leaderboard"); // creates the 825x800 window
@@ -30,7 +29,7 @@ int main() {
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
         cout << "Image couldnt be loaded" << endl;
-        return 1;
+        return;
     }
 
     sf::Sprite backgSprite(backgTexture); 
@@ -161,7 +160,7 @@ int main() {
 
     if(users==NULL){
         cout << "Error";
-        return 1;
+        return;
     }
 
     int index=0;
@@ -320,7 +319,7 @@ int main() {
 
             if(users==NULL){
                 cout << "Error";
-                return 1;
+                return;
             }
 
             fseek(users, (actualUser - 1) * sizeof(User), SEEK_SET);

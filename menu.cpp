@@ -1,15 +1,16 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "header.hpp"
 using namespace std;
 using namespace sf;
 
-int main(){
+void screenMenu(){
     RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred"); // creates the 825x800 window
 
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
         cout << "Image couldnt be loaded" << endl;
-        return 1;
+        return;
     }
 
     Sprite backgSprite(backgTexture); 
