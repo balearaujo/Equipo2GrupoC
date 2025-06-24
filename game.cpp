@@ -1,0 +1,287 @@
+#include <SFML/Graphics.hpp>
+#include "header.hpp"
+#include <stdlib.h>
+#include <time.h>
+#include <iostream>
+using namespace sf;
+using namespace std;
+
+void gameScreen() {
+    RenderWindow window(VideoMode({825, 800}), "SFML works!"); //create a window 825x800
+    // int mat[3][3] = {{0,1,2},{3,4,5},{6,7,8}};  //Matriz 3x3 filled with numbers form 0 to 8
+    
+    int size{9}; // SEND SIZE WHEN CALLING FUNCTION
+    int rows = (size == 4 ? 2 : 3);
+    int columns = rows;
+    int **mat = new int*[rows];
+    for (int i=0; i<rows; i++){
+        mat[i] = new int[columns];
+    }
+    int cont{0};
+    for (int i=0; i<rows; i++){
+        for (int j=0; j<columns; j++){
+            *(*(mat+i)+j) = cont;
+            cont++;
+        }
+    }
+
+    int row=0, col=0; //row and column in 0
+    //arrays of positions for the game and the user
+    int gameSecuence[50];
+    int userInput[50];
+    //the position in the array
+    int gsecuencePos=0, userinPos=0;
+
+    // logo
+    Image icon("assets/logo.png");
+    window.setIcon(icon);
+    
+    // background
+    Texture backgTexture;
+    if (!backgTexture.loadFromFile("assets/back4.png")) {
+        cout << "Image could'nt be loaded" << endl;
+    }
+    Sprite backgSprite(backgTexture); 
+    float scaleX = float(window.getSize().x) / backgTexture.getSize().x;
+    float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
+    backgSprite.setScale({scaleX, scaleY});
+
+    Font font("assets/BurbankBigCondensed-Black.otf");
+
+    int countPoints{0};
+    Text tPoints(font, "Points: " + to_string(countPoints), 50);
+    tPoints.setFillColor(Color::White);
+    tPoints.setOrigin({75,20});
+    tPoints.setPosition({825/2, 70});
+
+    Text tTurn(font, "MEMORIZE THE SEQUENCE!", 70);
+    tTurn.setFillColor(Color::White);
+    tTurn.setOrigin({85, 25});
+    tTurn.setPosition({200, 720});
+
+    //Shows the state of the game: player´s turn, gamesecuence, and the end of the game
+    enum States{showingSecuence, userTurn, lightingRec, End};
+    States game=showingSecuence;
+
+    
+    Clock clock; //Manage the time of the secuence showing 
+    Clock moveClock; //Manege the time of the user moving in the matrix
+    float onTime=0.6f, offTime=0.3f, moveDelay=0.2f, timePassed;
+    int show=0; //the position of the secuence showing
+    bool showlighterCol=false, entered=false; //ask if its time to light the rectangle
+
+    bool Lightselected=false;
+    Clock lightClk;
+    float light=.9f;
+    int fRow, fCol;
+    bool Lightoff=false;
+
+    //Array of colors
+Color lighterCol[] = {
+    Color(255, 0, 0),     // Rojo brillante
+    Color(255, 255, 0),   // Amarillo puro
+    Color(0, 255, 0),     // Verde neón
+    Color(0, 0, 255),     // Azul puro
+    Color(255, 128, 0),   // Naranja fuerte
+    Color(255, 0, 255),   // Magenta brillante
+    Color(0, 255, 255),   // Cian eléctrico
+    Color(0, 128, 255),   // Azul saturado
+    Color(128, 0, 255)    // Violeta intenso
+};
+
+Color colors[] = {
+    Color(255, 178, 178),   // Rojo aún más claro
+    Color(255, 255, 204),   // Amarillo muy claro
+    Color(204, 255, 204),   // Verde lima muy suave
+    Color(204, 229, 255),   // Azul claro más tenue
+    Color(255, 204, 153),   // Naranja más claro aún
+    Color(255, 204, 255),   // Magenta pastel muy claro
+    Color(204, 255, 238),   // Verde agua luminoso
+    Color(204, 255, 255),   // Cian muy claro
+    Color(229, 204, 255)    // Violeta clarísimo
+};
+    
+    srand(time(NULL));
+    gameSecuence[gsecuencePos]=rand()%(size==4 ? 4 : 9); //Creates first position with rand
+    gsecuencePos++; //moves to the next position
+    showlighterCol=true; //Shows lighter color
+    clock.restart(); //restart clock
+
+    int r, c;
+
+    while(window.isOpen())
+    {
+        while(const std::optional event = window.pollEvent())
+        {
+            if(event->is<Event::Closed>())
+                window.close();
+        }
+    
+        if(game==showingSecuence){ //ask if it´s the game´s turn
+
+            timePassed=clock.getElapsedTime().asSeconds(); //get how much time ha   s passed
+            if(showlighterCol){ //ask is the color its going to change
+                if(timePassed>onTime){ //ask if its on time to be lighter
+                    showlighterCol=false; //change to false
+                    clock.restart(); //restart clock
+                }
+            }
+            else
+            {
+                if(timePassed>offTime){
+                    show++; //increase the position its showing
+                    if(show<gsecuencePos){ //change into original color
+                        showlighterCol = true;
+                        clock.restart();
+                    }
+                else{
+                    //change the values to zero and calls to user turn
+                        game=userTurn;
+                        show=0;
+                        userinPos=0;
+                        moveClock.restart();
+                    }
+                }
+            }
+        }
+        else if(game==userTurn){
+            if(moveClock.getElapsedTime().asSeconds()>moveDelay) //HERE
+            {
+                //Move rows or columns based on pressed key and validate if movement is posible by checking Matrix boundaries.
+                    if (Keyboard::isKeyPressed(Keyboard::Key::Up) && row>0){ 
+                    row--;
+                    moveClock.restart();
+                    } else {
+                    if (Keyboard::isKeyPressed(Keyboard::Key::Down) && row<(size==4 ? 1 : 2)){
+                        row++;
+                        moveClock.restart();
+                    } else {
+                        
+                        if (Keyboard::isKeyPressed(Keyboard::Key::Right) && col<(size==4 ? 1 : 2 )){
+                            col++;
+                            moveClock.restart();
+                        
+                        } if (Keyboard::isKeyPressed(Keyboard::Key::Left) && col>0){
+                            col--;
+                            moveClock.restart();
+                        }
+                    }
+                } 
+            }
+
+        
+            
+            if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){ //ask if enter is being pressed
+                if (entered==false){
+                    entered=true;
+                    userInput[userinPos]=row*(size== 4?2:3)+ col;
+                    if (userInput[userinPos]!=gameSecuence[userinPos]){
+                        game=End;
+                    } else{
+                        userinPos++;
+                        if (userinPos==gsecuencePos){
+                            gameSecuence[gsecuencePos]=rand()%(size==4?4:9);
+                            gsecuencePos++;
+                            //Save positions
+                            fRow=row;
+                            fCol=col;
+                            //turns on light
+                            Lightselected=true;
+                            Lightoff=false;
+                            lightClk.restart();
+
+                            game=lightingRec; //change game state
+                            show=0;
+                            showlighterCol=true;
+                            countPoints++;
+                            tPoints.setString("Points: "+to_string(countPoints));
+                            clock.restart();
+                        }
+                    }
+                }
+            } else {
+                entered=false;
+            }
+        }
+        else if(game==lightingRec){
+            if (lightClk.getElapsedTime().asSeconds() > light) {
+                Lightselected=false;
+                game=showingSecuence;
+                show=0;
+                showlighterCol=true;
+                clock.restart();
+            }
+        }
+        // text when the sequence is showing or its player turn
+        if (game==userTurn){
+            tTurn.setPosition({740/2, 720});
+            tTurn.setString("YOUR TURN!");
+        }
+        else if (game==showingSecuence){
+            tTurn.setPosition({200, 720});
+            tTurn.setString("MEMORIZE THE SEQUENCE!");
+        } 
+        
+        //if the game ends close the window
+        if(game==End){
+            for (int i = 0; i < rows; ++i) {
+                delete[] mat[i];
+            }
+            delete[] mat;
+            window.close();
+            mainMenuScreen();
+        }
+        window.clear();
+        window.draw(backgSprite);
+        
+        //Draw Matrix
+        for(int i=0; i<rows; i++){
+            for(int j=0; j<columns; j++){
+                RectangleShape rectangle; //set the shape and the size of the rectangles
+                (size == 9 ? rectangle.setSize({140.f,140.f}) : rectangle.setSize({200.f,200.f}));
+                (size == 9 ? rectangle.setPosition({j*185.f+233.f, i*185.f+240.f}) : rectangle.setPosition({j*250.f+285.f, i*250.f+325.f})); //set the position of rectangles with spaces
+                rectangle.setOrigin({rectangle.getSize().x/2, rectangle.getSize().y/2});
+                if(game==showingSecuence && show< gsecuencePos)
+                {
+                    //turns the array of positions into matrix rows and columns 
+                    r=gameSecuence[show]/rows;
+                    c=gameSecuence[show]%columns;
+
+                    if(i==r && j==c){ //ask if our postion is the pattern
+                        if(showlighterCol){  //ask if its time to light it
+                            rectangle.setFillColor(lighterCol[mat[i][j]]); //Colors it Red
+                            rectangle.setScale({1.3, 1.3});
+                        }else{
+                            rectangle.setFillColor(lighterCol[mat[i][j]]); //filled rectangles with the ligher versions of colors
+                        }
+                    }
+                    else{
+                        rectangle.setFillColor(lighterCol[mat[i][j]]); 
+                    }
+                }
+                else if(game==userTurn||game==lightingRec){ //ask if its the user turn
+                    if (Lightselected && (fRow==i) && (fCol==j)){
+                        rectangle.setFillColor(Color::Green);
+                        rectangle.setScale({1.0f, 1.0f});
+                    } else if(game ==userTurn && (i==row) &&( j==col)) //ask if its being selected
+                        rectangle.setFillColor(colors[mat[i][j]]); //colors it with a darker version
+                    else{
+                        rectangle.setFillColor(lighterCol[mat[i][j]]); //filled rectangles with the lighter versions of colors
+                    }
+                }
+                else{
+                    rectangle.setFillColor(lighterCol[mat[i][j]]); //filled rectangles with the lighter versions of colors
+                }
+
+                window.draw(rectangle);
+            }
+        }
+        window.draw(tPoints);
+        window.draw(tTurn);
+        window.display();
+
+        if (Lightselected && Lightoff){
+                Lightselected=false;
+            }
+    }
+}
