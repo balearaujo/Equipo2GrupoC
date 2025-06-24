@@ -127,7 +127,7 @@ void mainMenuScreen(){
                 if (key->scancode == Keyboard::Scancode::Enter){
                     if (posAux==0){ // log in
                         window.close();
-                        screenLogIn();
+                        gameScreen();
                     }
                     if (posAux==1){ // sign up
                         window.close();

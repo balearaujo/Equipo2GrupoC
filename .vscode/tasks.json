@@ -8,9 +8,10 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"main.cpp",
+				"main.cpp", // add all cpp files needed
 				"logIn.cpp",
-				"signUp.cpp", // add all cpp files needed
+				"signUp.cpp", 
+				"game.cpp", 
 				"-I${workspaceFolder}/include",
 				"-DSFML_STATIC",
 				"-o",
