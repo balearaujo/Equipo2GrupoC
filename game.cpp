@@ -1,12 +1,12 @@
 #include <SFML/Graphics.hpp>
+#include "header.hpp"
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
-#include "header.hpp";
 using namespace sf;
+using namespace std;
 
-void gameScreen() 
-{
+void gameScreen() {
     RenderWindow window(VideoMode({825, 800}), "SFML works!"); //create a window 825x800 
     int mat[3][3] = {{0,1,2},{3,4,5},{6,7,8}};  //Matriz 3x3 filled with numbers form 0 to 8
     int row=0, col=0; //row and column in 0
@@ -15,6 +15,28 @@ void gameScreen()
     int userInput[50];
     //the position in the array
     int gsecuencePos=0, userinPos=0;
+
+    // logo
+    Image icon("assets/logo.png");
+    window.setIcon(icon);
+    
+    // background
+    Texture backgTexture;
+    if (!backgTexture.loadFromFile("assets/back4.png")) {
+        cout << "Image could'nt be loaded" << endl;
+    }
+    Sprite backgSprite(backgTexture); 
+    float scaleX = float(window.getSize().x) / backgTexture.getSize().x;
+    float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
+    backgSprite.setScale({scaleX, scaleY});
+
+    Font font("assets/BurbankBigCondensed-Black.otf");
+
+    int countPoints{0};
+    Text tPoints(font, "Points: " + to_string(countPoints), 50);
+    tPoints.setFillColor(Color::White);
+    tPoints.setOrigin({75,20});
+    tPoints.setPosition({825/2, 70});
 
     //Shows the state of the game: player´s turn, gamesecuence, and the end of the game
     enum States{showingSecuence, userTurn, End};
@@ -131,24 +153,29 @@ Color colors[] = {
                         game=showingSecuence;
                         show=0;
                         showlighterCol=true;
+                        countPoints++;
+                        tPoints.setString("Points: " + to_string(countPoints));
                         clock.restart();
                     }
                 }
                 sleep(milliseconds(150));
             }
         }
-
+        
         //if the game ends close the window
         if(game==End){
             window.close();
+            mainMenuScreen();
         }
         window.clear();
-
+        window.draw(backgSprite);
+        
         //Draw Matrix
         for(int i=0; i<3; i++){
             for(int j=0; j<3; j++){
                 sf::RectangleShape rectangle({140.f,140.f}); //set the shape and the size of the rectangles
-                rectangle.setPosition({j*170.f+170.f, i*170.f+170.f}); //set the position of rectangles with spaces
+                rectangle.setPosition({j*185.f+233.f, i*185.f+240.f}); //set the position of rectangles with spaces
+                rectangle.setOrigin({rectangle.getSize().x/2, rectangle.getSize().y/2});
                 if(game==showingSecuence && show< gsecuencePos)
                 {
                     //turns the array of positions into matrix rows and columns 
@@ -157,9 +184,8 @@ Color colors[] = {
 
                     if(i==r && j==c){ //ask if our postion is the pattern
                         if(showlighterCol){  //ask if its time to light it
-                            rectangle.setFillColor(Color::Red); //Colors it Red
-                            rectangle.setScale({1.2, 1.2});
-                            rectangle.setOrigin({rectangle.getSize().x, rectangle.getSize().y});
+                            rectangle.setFillColor(lighterCol[mat[i][j]]); //Colors it Red
+                            rectangle.setScale({1.3, 1.3});
                         }else{
                             rectangle.setFillColor(lighterCol[mat[i][j]]); //filled rectangles with the ligher versions of colors
                         }
@@ -182,7 +208,7 @@ Color colors[] = {
                 window.draw(rectangle);
             }
         }
-
+        window.draw(tPoints);
         window.display();
     }
 }
