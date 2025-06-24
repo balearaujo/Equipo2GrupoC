@@ -138,7 +138,7 @@ int main()
             }
         }
 
-        //if the game ends close the window
+        //if the game ends c
         if(game==End){
             window.close();
         }
