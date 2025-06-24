@@ -4,7 +4,7 @@
 using namespace std;
 using namespace sf;
 
-struct User{
+struct User2{
     char name[16];
     int score;
     int dd;
@@ -13,7 +13,7 @@ struct User{
 };
 
 void screenLeaderboard() {
-    User data;
+    User2 data;
     FILE *users;
 
     users = fopen("users.dat","rb");
@@ -256,15 +256,16 @@ void screenLeaderboard() {
                     nextBtn.setFillColor(Color(130,130,130));
                     nextBtnBorder.setFillColor(Color::Black);
 
-                    if (Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
-                        if (!enterPressed && actualPage > 1) {
-                            actualPage--;
-                            needsUpdate = true;
-                            enterPressed = true;
+                    if (const auto *key = event->getIf<Event::KeyPressed>()) {
+                        if (key->scancode == Keyboard::Scancode::Enter){
+                            if (!enterPressed && actualPage > 1) {
+                                actualPage--;
+                                needsUpdate = true;
+                                enterPressed = true;
+                            }
                         }
-                    } else {
-                        enterPressed = false;
-                    }
+                    } else enterPressed = false;
+                    
                     break;
 
                 case 1:
@@ -278,8 +279,11 @@ void screenLeaderboard() {
                     nextBtn.setFillColor(Color(130,130,130));
                     nextBtnBorder.setFillColor(Color::Black);
 
-                    if (Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
-                        // menu action
+                    if (const auto* key = event->getIf<Event::KeyPressed>()){
+                        if (key->scancode == Keyboard::Scancode::Escape){
+                            window.close();
+                            screenMenu();
+                        }
                     }
                     break;
 
@@ -293,17 +297,20 @@ void screenLeaderboard() {
                     prevBtnBorder.setFillColor(Color::Black);
                     menuBtn.setFillColor(Color(130,130,130));
                     menuBtnBorder.setFillColor(Color::Black);
-                     if (Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
-                        if (!enterPressed && actualPage < lastPage) {
-                            actualPage++;
-                            needsUpdate = true;
-                            enterPressed = true;
-                        }
-                    } else {
-                        enterPressed = false;
-                    }
+                    if (const auto* key = event->getIf<Event::KeyPressed>()){
+                        if (key->scancode == Keyboard::Scancode::Escape){
+                            if (!enterPressed && actualPage < lastPage) {
+                                actualPage++;
+                                needsUpdate = true;
+                                enterPressed = true;
+                            }
+                        } 
+                    } else enterPressed = false;
                     break;
             }
+
+
+
         }   
 
         actualUser = actualPage*10-9;
@@ -326,7 +333,7 @@ void screenLeaderboard() {
 
             index = 0;
 
-            while (fread(&data,sizeof(User),1,users) && actualUser <= lastUserPage && actualUser<=totalUsers){
+            while (fread(&data,sizeof(User2),1,users) && actualUser <= lastUserPage && actualUser<=totalUsers){
                 Text rank(font, to_string(actualUser), 32);
                 rank.setOrigin({150,40});
                 rank.setPosition({230, 270.0f + index * 45.0f});

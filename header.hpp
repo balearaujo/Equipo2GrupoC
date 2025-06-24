@@ -37,10 +37,6 @@ int assignID(FILE *);
 void screenLogIn();
 bool isValidUser(sf::Text, sf::Text);
 
-                    // if (const auto* key = event->getIf<Event::KeyPressed>()){
-                    //     if (key->scancode == Keyboard::Scancode::Escape){
-
-                    //     }
 
 // menu.cpp
 void screenMenu();
@@ -55,11 +51,11 @@ void screenSelectDifficulty();
 
             
 // main.cpp
-void mainMenuScreen();
+void screenMainMenu();
 
 
 
 // game.cpp
-void gameScreen();
+void screenGame(int);
 
 #endif

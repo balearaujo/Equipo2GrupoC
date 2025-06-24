@@ -123,7 +123,7 @@ void screenSignUp(){
             } else if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Escape){
                     window.close();
-                    mainMenuScreen();
+                    screenMainMenu();
                 }
             }
             // adjust posAux to handle "input" textbox
@@ -191,7 +191,7 @@ void screenSignUp(){
                                         writeUser(inpUsername, inpPass);
                                         cout << "User " << inpUsername.getString().toAnsiString() << " writed ";
                                         window.close();
-                                        mainMenuScreen();
+                                        screenMainMenu();
                                     }
                                 }   
                             } else{ // username not available

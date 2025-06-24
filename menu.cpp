@@ -123,10 +123,12 @@ void screenMenu(){
         while (const optional event = window.pollEvent()){ // check and handle window events
             if (event->is<sf::Event::Closed>()) // check if the event was closing the window
                 window.close();
-            if(Keyboard::isKeyPressed(Keyboard::Key::Escape)){
-                window.close();
+            if (const auto* key = event->getIf<Event::KeyPressed>()){
+                if (key->scancode == Keyboard::Scancode::Escape){
+                    window.close();
+                    screenMainMenu();
+                }
             }
-
             if (posAux>= 0 && posAux<4){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
                     posAux++;
@@ -159,8 +161,9 @@ void screenMenu(){
                     logOutBtnBorder.setFillColor(Color::Black);
 
                     if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        // NEW GAME action
+                        
                     }
+
                     break;
 
                 case 1:
@@ -251,9 +254,33 @@ void screenMenu(){
                     helpBtnBorder.setFillColor(Color::Black);
 
                     if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        // LOG OUT action
+                        window.close();
+                        screenMainMenu();
                     }
                     break;
+            }
+            
+            if (const auto *key = event->getIf<Event::KeyPressed>()){
+                if (key->scancode == Keyboard::Scancode::Enter){
+                    switch(posAux){
+                        case 0:
+                            window.close();
+                            screenSelectDifficulty();
+                            break;
+                        case 1:
+                            window.close();
+                            screenLeaderboard();
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            window.close();
+                            screenMainMenu();
+                            break;
+                        }
+                }
             }
         }
 

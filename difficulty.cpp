@@ -4,7 +4,7 @@
 using namespace std;
 using namespace sf;
 
-void screenSelectDificulty(){
+void screenSelectDifficulty(){
     RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred"); // creates the 825x800 window
 
     Texture backgTexture;
@@ -130,11 +130,8 @@ void screenSelectDificulty(){
                     menuBtn.setFillColor(Color(75,75,75));
                     menuBtnBorder.setFillColor(Color::Black);
 
-                    if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        // HARD action
-                    }
-
                     break;
+
                 case 2:
                     // MENU button selected
                     menuBtn.setFillColor(Color(253,114,114));
@@ -145,12 +142,26 @@ void screenSelectDificulty(){
                     easyBtnBorder.setFillColor(Color::Black);
                     hardBtn.setFillColor(Color(130,130,130));
                     hardBtnBorder.setFillColor(Color::Black);
- 
-                    if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        // EASY action
-                    }
+
                     break;
             } 
+            
+            if (const auto* key = event->getIf<Event::KeyPressed>()){
+                if (key->scancode == Keyboard::Scancode::Enter){
+                    if (posAux==0){
+                        window.close();
+                        screenGame(4);
+                    } 
+                    else if (posAux==1){
+                        window.close();
+                        screenGame(9);
+                    } 
+                    else{
+                        window.close();
+                        screenMenu();
+                    }
+                }
+            }
         }
 
         window.clear(Color::Black); // clear the window to draw the next frame

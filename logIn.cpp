@@ -112,7 +112,7 @@ void screenLogIn(){
             } else if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Escape){
                     window.close();
-                    mainMenuScreen();
+                    screenMainMenu();
                 }
             }
 
@@ -157,7 +157,7 @@ void screenLogIn(){
                             } else{ // user available, same password, correct lenght
                                 if (isValidUser(inpUsername, inpPass)){
                                     window.close();
-                                    mainMenuScreen();
+                                    screenMenu();
                                 } else{
                                     tWarningPass.setString("LOGIN FAILED. VERIFY YOUR INFORMATION AND TRY AGAIN");
                                     tWarningPass.setFillColor(Color::Yellow);

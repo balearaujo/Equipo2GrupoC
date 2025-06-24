@@ -6,11 +6,11 @@
 using namespace sf;
 using namespace std;
 
-void gameScreen() {
+void screenGame(int size) {
     RenderWindow window(VideoMode({825, 800}), "SFML works!"); //create a window 825x800
     // int mat[3][3] = {{0,1,2},{3,4,5},{6,7,8}};  //Matriz 3x3 filled with numbers form 0 to 8
     
-    int size{9}; // SEND SIZE WHEN CALLING FUNCTION
+    //int size{9}; // SEND SIZE WHEN CALLING FUNCTION
     int rows = (size == 4 ? 2 : 3);
     int columns = rows;
     int **mat = new int*[rows];
@@ -200,7 +200,7 @@ Color colors[] = {
             }
             delete[] mat;
             window.close();
-            mainMenuScreen();
+            screenMenu();
         }
         window.clear();
         window.draw(backgSprite);
@@ -210,7 +210,7 @@ Color colors[] = {
             for(int j=0; j<columns; j++){
                 RectangleShape rectangle; //set the shape and the size of the rectangles
                 (size == 9 ? rectangle.setSize({140.f,140.f}) : rectangle.setSize({200.f,200.f}));
-                (size == 9 ? rectangle.setPosition({j*185.f+233.f, i*185.f+240.f}) : rectangle.setPosition({j*250.f+285.f, i*250.f+325.f})); //set the position of rectangles with spaces
+                (size == 9 ? rectangle.setPosition({j*185.f+233.f, i*185.f+220.f}) : rectangle.setPosition({j*250.f+285.f, i*250.f+270.f})); //set the position of rectangles with spaces
                 rectangle.setOrigin({rectangle.getSize().x/2, rectangle.getSize().y/2});
                 if(game==showingSecuence && show< gsecuencePos)
                 {

@@ -5,12 +5,12 @@ using namespace std;
 using namespace sf;
 
 int main() {
-    mainMenuScreen();
+    screenMainMenu();
 
     return 0;
 }
 
-void mainMenuScreen(){
+void screenMainMenu(){
     RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!", State::Windowed);
     
     // logo
@@ -127,7 +127,7 @@ void mainMenuScreen(){
                 if (key->scancode == Keyboard::Scancode::Enter){
                     if (posAux==0){ // log in
                         window.close();
-                        gameScreen();
+                        screenLogIn();
                     }
                     if (posAux==1){ // sign up
                         window.close();
