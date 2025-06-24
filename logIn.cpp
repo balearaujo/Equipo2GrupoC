@@ -23,7 +23,23 @@ void screenLogIn(){
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
     backgSprite.setScale({scaleX, scaleY});
 
-    // 0 username, 1 password, 2 button
+    // home white icon
+    Texture homeWTexture;
+    if (!homeWTexture.loadFromFile("assets/home-icon-white.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeWSprite(homeWTexture); 
+    homeWSprite.setPosition({740,725});
+
+    // home black icon
+    Texture homeBTexture;
+    if (!homeBTexture.loadFromFile("assets/home-icon-black.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeBSprite(homeBTexture); 
+    homeBSprite.setPosition({740,725});
+
+    // 0 username, 1 password, 2 button, 3 home button
     int posAux{0};
 
     // declaration
@@ -102,6 +118,7 @@ void screenLogIn(){
         inpBoxesBorder.push_back(inpBoxBor);
     }
 
+    bool homeIconHover = false;
 
     while (window.isOpen())
     {
@@ -116,15 +133,13 @@ void screenLogIn(){
                 }
             }
 
-            cout << "hola ";
-
-            if (posAux >= 0 && posAux<2){
+            if (posAux >= 0 && posAux<3){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
                     posAux++;
                     cout << posAux;
                 }
             }
-            if (posAux>0 && posAux<=2){
+            if (posAux>0 && posAux<=3){
                 if (Keyboard:: isKeyPressed(Keyboard::Key::Up)){
                     posAux--;
                     cout << posAux;
@@ -136,15 +151,15 @@ void screenLogIn(){
                     tPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpUsername, event.value(), concatUser, tWarnings);
+                    homeIconHover = false;
                     break;
-            
                 case 1:
                     tPass.setFillColor(Color(102, 179, 255));
                     tUsername.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpPass, event.value(), concatPass, tWarnings);
+                    homeIconHover = false;
                     break;
-                
                 case 2:
                     tUsername.setFillColor(Color::White);
                     tPass.setFillColor(Color::White);
@@ -165,7 +180,19 @@ void screenLogIn(){
                             }
                         }
                     }
+                    homeIconHover = false;
                     break;
+                case 3:
+                    tUsername.setFillColor(Color::White);
+                    tPass.setFillColor(Color::White);
+                    buttSubBorder.setFillColor(Color::Transparent);
+                    homeIconHover = true;
+                    if (const auto* key = event->getIf<Event::KeyPressed>()){
+                        if (key->scancode == Keyboard::Scancode::Enter){
+                            window.close();
+                            screenMainMenu();
+                        }
+                    }
             }
 
             if (!inpUsername.getString().isEmpty() && !inpPass.getString().isEmpty()){
@@ -193,6 +220,13 @@ void screenLogIn(){
         window.draw(buttSubBorder);
         window.draw(buttSub);
         window.draw(tButtonLI);
+
+        if (homeIconHover){
+            window.draw(homeBSprite);
+        } else {
+            window.draw(homeWSprite);
+        }
+        
         window.display();
     }
 }

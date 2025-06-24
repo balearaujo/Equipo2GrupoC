@@ -23,8 +23,26 @@ void screenSignUp(){
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
     backgSprite.setScale({scaleX, scaleY});
 
-    // 0 = username, 1 = password, 2 = confirm password, 3 = sign up button
+    // home white icon
+    Texture homeWTexture;
+    if (!homeWTexture.loadFromFile("assets/home-icon-white.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeWSprite(homeWTexture); 
+    homeWSprite.setPosition({740,725});
+
+    // home black icon
+    Texture homeBTexture;
+    if (!homeBTexture.loadFromFile("assets/home-icon-black.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeBSprite(homeBTexture); 
+    homeBSprite.setPosition({740,725});
+
+
+    // 0 = username, 1 = password, 2 = confirm password, 3 = sign up button, 4 home button
     int posAux{0};  
+    bool homeIconHover = false;
     
     // declaration
     Font font("assets/BurbankBigCondensed-Black.otf");
@@ -127,14 +145,14 @@ void screenSignUp(){
                 }
             }
             // adjust posAux to handle "input" textbox
-            if (posAux>=0 && posAux<3){ // posAux between 0-2
+            if (posAux>=0 && posAux<4){ // posAux between 0-3
                 if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
                     posAux++;
                     cout << posAux;
                 }
             }
 
-            if (posAux>0 && posAux<=3){ // posAux between 1-3
+            if (posAux>0 && posAux<=4){ // posAux between 1-4
                 if (Keyboard::isKeyPressed(Keyboard::Key::Up)){
                     posAux--;
                     cout << posAux;
@@ -149,6 +167,7 @@ void screenSignUp(){
                     tConfPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpUsername, event.value(), concatUser, tWarnings);
+                    homeIconHover = false;
                     break;
         
                 case 1:
@@ -158,6 +177,7 @@ void screenSignUp(){
                     tConfPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpPass, event.value(), concatPass, tWarnings);
+                    homeIconHover = false;
                     break;
             
                 case 2:
@@ -167,6 +187,7 @@ void screenSignUp(){
                     tUsername.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     setInputValues(inpConfPass, event.value(), concatConfPass, tWarnings);
+                    homeIconHover = false;
                     break;
                 
                 case 3:
@@ -200,6 +221,22 @@ void screenSignUp(){
                             }
                         }
                     }
+                    homeIconHover = false;
+                    break;
+
+                case 4:
+                    tPass.setFillColor(Color::White);
+                    tConfPass.setFillColor(Color::White);
+                    tUsername.setFillColor(Color::White);
+                    buttSubBorder.setFillColor(Color::Transparent);
+                    if (const auto* key = event->getIf<Event::KeyPressed>()){
+                        if (key->scancode == Keyboard::Scancode::Enter){
+                            window.close();
+                            screenMainMenu();
+                        }
+                    }
+                    homeIconHover = true;
+                    break;
             }
     
             if (!(inpUsername.getString().isEmpty()) && !(inpPass.getString().isEmpty()) && !(inpConfPass.getString().isEmpty())){
@@ -230,6 +267,13 @@ void screenSignUp(){
         window.draw(buttSubBorder);
         window.draw(buttSub);
         window.draw(tButtonSU);
+
+        if (homeIconHover){
+            window.draw(homeBSprite);
+        } else {
+            window.draw(homeWSprite);
+        }
+
         window.display();
     }
 }
