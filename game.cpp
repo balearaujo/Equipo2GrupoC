@@ -69,7 +69,7 @@ void screenGame(int size) {
     float onTime=0.6f, offTime=0.3f, moveDelay=0.2f, timePassed;
     int show=0; //the position of the secuence showing
     bool showlighterCol=false; //ask if its time to light the rectangle
-
+    bool entered;
     //Array of colors
 Color lighterCol[] = {
     Color(255, 0, 0),     // Rojo brillante
@@ -162,10 +162,12 @@ Color colors[] = {
                 } 
             }
             if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){ //ask if enter is being pressed
-                userInput[userinPos]=row*(size == 4 ? 2: 3)+col; //saves matrix position into an array
-                if(userInput[userinPos]!=gameSecuence[userinPos]){ //if the user selects a position that dosen't match the game ends
-                    game=End; 
-                }  else{
+                if(entered==false){
+                    entered=true;
+                    userInput[userinPos]=row*(size == 4 ? 2: 3)+col; //saves matrix position into an array
+                    if(userInput[userinPos]!=gameSecuence[userinPos]){ //if the user selects a position that dosen't match the game ends
+                        game=End; 
+                    }  else{
                     userinPos++; //move to the next position
                     if(userinPos==gsecuencePos){
                         //if it is the same position of the secuence, you move to the next one and add a new step to the secuence
@@ -180,6 +182,10 @@ Color colors[] = {
                     }
                 }
                 sleep(milliseconds(150));
+                }
+
+            } else {
+                entered=false;
             }
         }
         
