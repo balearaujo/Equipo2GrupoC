@@ -7,8 +7,24 @@ using namespace sf;
 using namespace std;
 
 void gameScreen() {
-    RenderWindow window(VideoMode({825, 800}), "SFML works!"); //create a window 825x800 
-    int mat[3][3] = {{0,1,2},{3,4,5},{6,7,8}};  //Matriz 3x3 filled with numbers form 0 to 8
+    RenderWindow window(VideoMode({825, 800}), "SFML works!"); //create a window 825x800
+    // int mat[3][3] = {{0,1,2},{3,4,5},{6,7,8}};  //Matriz 3x3 filled with numbers form 0 to 8
+    
+    int size{9}; // SEND SIZE WHEN CALLING FUNCTION
+    int rows = (size == 4 ? 2 : 3);
+    int columns = rows;
+    int **mat = new int*[rows];
+    for (int i=0; i<rows; i++){
+        mat[i] = new int[columns];
+    }
+    int cont{0};
+    for (int i=0; i<rows; i++){
+        for (int j=0; j<columns; j++){
+            *(*(mat+i)+j) = cont;
+            cont++;
+        }
+    }
+
     int row=0, col=0; //row and column in 0
     //arrays of positions for the game and the user
     int gameSecuence[50];
@@ -38,6 +54,11 @@ void gameScreen() {
     tPoints.setOrigin({75,20});
     tPoints.setPosition({825/2, 70});
 
+    Text tTurn(font, "MEMORIZE THE SEQUENCE!", 70);
+    tTurn.setFillColor(Color::White);
+    tTurn.setOrigin({85, 25});
+    tTurn.setPosition({200, 720});
+
     //Shows the state of the game: player´s turn, gamesecuence, and the end of the game
     enum States{showingSecuence, userTurn, End};
     States game=showingSecuence;
@@ -52,29 +73,29 @@ void gameScreen() {
     //Array of colors
 Color lighterCol[] = {
     Color(255, 0, 0),     // Rojo brillante
+    Color(255, 255, 0),   // Amarillo puro
+    Color(0, 255, 0),     // Verde neón
+    Color(0, 0, 255),     // Azul puro
     Color(255, 128, 0),   // Naranja fuerte
     Color(255, 0, 255),   // Magenta brillante
-    Color(0, 255, 0),     // Verde neón
     Color(0, 255, 255),   // Cian eléctrico
     Color(0, 128, 255),   // Azul saturado
-    Color(0, 0, 255),     // Azul puro
-    Color(128, 0, 255),   // Violeta intenso
-    Color(255, 255, 0)   // Amarillo puro
+    Color(128, 0, 255)    // Violeta intenso
 };
 
 Color colors[] = {
     Color(255, 178, 178),   // Rojo aún más claro
+    Color(255, 255, 204),   // Amarillo muy claro
+    Color(204, 255, 204),   // Verde lima muy suave
+    Color(204, 229, 255),   // Azul claro más tenue
     Color(255, 204, 153),   // Naranja más claro aún
     Color(255, 204, 255),   // Magenta pastel muy claro
-    Color(204, 255, 204),   // Verde lima muy suave
     Color(204, 255, 238),   // Verde agua luminoso
     Color(204, 255, 255),   // Cian muy claro
-    Color(204, 229, 255),   // Azul claro más tenue
-    Color(229, 204, 255),   // Violeta clarísimo
-    Color(255, 255, 204)    // Amarillo muy claro
+    Color(229, 204, 255)    // Violeta clarísimo
 };
     srand(time(NULL));
-    gameSecuence[gsecuencePos]=rand()%9; //Creates first position with rand
+    gameSecuence[gsecuencePos]=rand()%(size==4 ? 4 : 9); //Creates first position with rand
     gsecuencePos++; //moves to the next position
     showlighterCol=true; //Shows lighter color
     clock.restart(); //restart clock
@@ -124,12 +145,12 @@ Color colors[] = {
                     row--;
                     moveClock.restart();
                     } else {
-                    if (Keyboard::isKeyPressed(Keyboard::Key::Down) && row<2){
+                    if (Keyboard::isKeyPressed(Keyboard::Key::Down) && row<(size==4 ? 1 : 2)){
                         row++;
                         moveClock.restart();
                     } else {
                         
-                        if (Keyboard::isKeyPressed(Keyboard::Key::Right) && col<2){
+                        if (Keyboard::isKeyPressed(Keyboard::Key::Right) && col<(size==4 ? 1 : 2 )){
                             col++;
                             moveClock.restart();
                         
@@ -141,14 +162,14 @@ Color colors[] = {
                 } 
             }
             if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){ //ask if enter is being pressed
-                userInput[userinPos]=row*3+col; //saves matrix position into an array
+                userInput[userinPos]=row*(size == 4 ? 2: 3)+col; //saves matrix position into an array
                 if(userInput[userinPos]!=gameSecuence[userinPos]){ //if the user selects a position that dosen't match the game ends
                     game=End; 
                 }  else{
                     userinPos++; //move to the next position
                     if(userinPos==gsecuencePos){
                         //if it is the same position of the secuence, you move to the next one and add a new step to the secuence
-                        gameSecuence[gsecuencePos]=rand()%9;
+                        gameSecuence[gsecuencePos]=rand()%(size==4 ? 4 : 9);
                         gsecuencePos++;
                         game=showingSecuence;
                         show=0;
@@ -162,8 +183,22 @@ Color colors[] = {
             }
         }
         
+        // text when the sequence is showing or its player turn
+        if (game==userTurn){
+            tTurn.setPosition({740/2, 720});
+            tTurn.setString("YOUR TURN!");
+        }
+        else if (game==showingSecuence){
+            tTurn.setPosition({200, 720});
+            tTurn.setString("MEMORIZE THE SEQUENCE!");
+        } 
+        
         //if the game ends close the window
         if(game==End){
+            for (int i = 0; i < rows; ++i) {
+                delete[] mat[i];
+            }
+            delete[] mat;
             window.close();
             mainMenuScreen();
         }
@@ -171,16 +206,17 @@ Color colors[] = {
         window.draw(backgSprite);
         
         //Draw Matrix
-        for(int i=0; i<3; i++){
-            for(int j=0; j<3; j++){
-                sf::RectangleShape rectangle({140.f,140.f}); //set the shape and the size of the rectangles
-                rectangle.setPosition({j*185.f+233.f, i*185.f+240.f}); //set the position of rectangles with spaces
+        for(int i=0; i<rows; i++){
+            for(int j=0; j<columns; j++){
+                RectangleShape rectangle; //set the shape and the size of the rectangles
+                (size == 9 ? rectangle.setSize({140.f,140.f}) : rectangle.setSize({200.f,200.f}));
+                (size == 9 ? rectangle.setPosition({j*185.f+233.f, i*185.f+240.f}) : rectangle.setPosition({j*250.f+285.f, i*250.f+325.f})); //set the position of rectangles with spaces
                 rectangle.setOrigin({rectangle.getSize().x/2, rectangle.getSize().y/2});
                 if(game==showingSecuence && show< gsecuencePos)
                 {
                     //turns the array of positions into matrix rows and columns 
-                    r=gameSecuence[show]/3;
-                    c=gameSecuence[show]%3;
+                    r=gameSecuence[show]/rows;
+                    c=gameSecuence[show]%columns;
 
                     if(i==r && j==c){ //ask if our postion is the pattern
                         if(showlighterCol){  //ask if its time to light it
@@ -209,6 +245,7 @@ Color colors[] = {
             }
         }
         window.draw(tPoints);
+        window.draw(tTurn);
         window.display();
     }
 }
