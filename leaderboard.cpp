@@ -28,8 +28,13 @@ void screenLeaderboard() {
 
     int totalUsers = allUsers.size();
 
-    RenderWindow window(sf::VideoMode({825, 800}), "Leaderboard"); // Create a window
+    RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred!"); // Create a window
 
+    // logo
+    Image icon("assets/logo.png");
+    window.setIcon(icon);
+    
+    
     // Load background texture
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
@@ -203,8 +208,11 @@ void screenLeaderboard() {
             if (event->is<sf::Event::Closed>()){
                 window.close();
             }   
-            if(Keyboard::isKeyPressed(Keyboard::Key::Escape)){
-                window.close(); // Close the window if Escape key is pressed
+            if(const auto*key = event->getIf<Event::KeyPressed>()){
+                if (key->scancode == Keyboard::Scancode::Escape){
+                    window.close(); // Close the window if Escape key is pressed
+                    screenMenu();
+                }
             }
 
             // If Right arrow is pressed and there is more than one page

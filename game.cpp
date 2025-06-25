@@ -7,9 +7,8 @@
 #include <fstream>
 using namespace sf;
 using namespace std;
-
-void screenGame(int size) {
-    RenderWindow window(VideoMode({825, 800}), "SFML works!"); //create a window 825x800
+void screenGame(int points, int size, int *sequence, int sequenceSize, bool paused) {
+    RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!"); //create a window 825x800
     // int mat[3][3] = {{0,1,2},{3,4,5},{6,7,8}};  //Matriz 3x3 filled with numbers form 0 to 8
     
     //int size{9}; // SEND SIZE WHEN CALLING FUNCTION
@@ -30,9 +29,17 @@ void screenGame(int size) {
     int row=0, col=0; //row and column in 0
     //arrays of positions for the game and the user
     int *gameSequence = new int[50];
+    
+    if (paused){
+        for (int i=0; i < sequenceSize; i++){
+            gameSequence[i] = sequence[i];
+        }
+    }
+
     int *userInput = new int [50];
     //the position in the array
-    int gsequencePos=0, userinPos=0;
+    int gsequencePos = (paused ? sequenceSize : 0);
+    int userinPos = (paused ? sequenceSize : 0);
 
     // logo
     Image icon("assets/logo.png");
@@ -50,26 +57,36 @@ void screenGame(int size) {
 
     Font font("assets/BurbankBigCondensed-Black.otf");
 
+
     // home black icon
     Texture homeBTexture;
     if (!homeBTexture.loadFromFile("assets/home-icon-black.png")) {
         cout << "Image couldnt be loaded" << endl;
     }
     Sprite homeBSprite(homeBTexture); 
-    homeBSprite.setPosition({825/2,450});
+    Vector2u homeOGSize = homeBTexture.getSize();
+    homeBSprite.setScale({(300.f / homeOGSize.x) , (300.f / homeOGSize.y)});
+    homeBSprite.setPosition({265, 315});
+
 
     // pause menu
-    RectangleShape bgPause(Vector2f{600 , 650});
+    RectangleShape bgPause(Vector2f{600 , 500});
     bgPause.setFillColor(Color(20,20,40));
     bgPause.setOrigin({bgPause.getSize().x/2, bgPause.getSize().y/2});
     bgPause.setPosition({825/2, 800/2});
-    Text tPause(font, "PAUSE", 60);
-    tPause.setOrigin({80,21});
+
+    RectangleShape bgPauseBorder(Vector2f{610 , 510});
+    bgPauseBorder.setFillColor(Color::White);
+    bgPauseBorder.setOrigin({bgPauseBorder.getSize().x/2, bgPauseBorder.getSize().y/2});
+    bgPauseBorder.setPosition({825/2, 800/2});
+
+    Text tPause(font, "PAUSE", 90);
+    tPause.setOrigin({100,25});
     tPause.setFillColor(Color::White);
-    tPause.setPosition({825/2, 500});
+    tPause.setPosition({825/2, 200});
 
+    int countPoints = (paused ? points : 0);
 
-    int countPoints{0};
     int pointMultiplier = (size == 4 ? 1 : 2); // 1 for EASY level, 2 for HARD level
     Text tPoints(font, "Points: " + to_string(countPoints), 50);
     tPoints.setFillColor(Color::White);
@@ -118,6 +135,8 @@ void screenGame(int size) {
     };
 
     srand(time(NULL));
+
+
     gameSequence[gsequencePos]=rand()%(size==4 ? 4 : 9); //Creates first position with rand
     gsequencePos++; //moves to the next position
     showlighterCol=true; //Shows lighter color
@@ -325,6 +344,7 @@ void screenGame(int size) {
                 window.close();
                 screenMenu();
             }
+            window.draw(bgPauseBorder);
             window.draw(bgPause);
             window.draw(tPause);
             window.draw(homeBSprite);

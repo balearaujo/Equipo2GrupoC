@@ -16,6 +16,7 @@
 				"menu.cpp", 
 				"difficulty.cpp", 
 				"help.cpp",
+				"loadGame.cpp",
 				"-I${workspaceFolder}/include",
 				"-DSFML_STATIC",
 				"-o",

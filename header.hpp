@@ -45,17 +45,22 @@ void screenLeaderboard();
 // difficulty.cpp
 void screenSelectDifficulty();
 
-            
+
 // main.cpp
 void screenMainMenu();
+
+
 //help.cpp
 void helpScreen();
 
 
+// loadGame.cpp
+void screenLoadGame();
+bool checkGame(std::string&, int&, int&, int*, int&);
 
 // game.cpp
 enum States{showingSequence, userTurn, End, gamePaused}; // global enum 
-void screenGame(int);
+void screenGame(int, int, int *, int, bool);
 void saveGame(int *, int, States, int, int);
 
 #endif

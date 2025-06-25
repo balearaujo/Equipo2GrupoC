@@ -7,7 +7,6 @@ using namespace std;
 
 void screenSignUp(){
     RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!");
-    window.setTitle("Sign up");
 
     // logo
     Image icon("assets/logo.png");

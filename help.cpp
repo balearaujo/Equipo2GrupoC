@@ -5,7 +5,12 @@ using namespace std;
 using namespace sf;
 
 void helpScreen(){
-    RenderWindow window(VideoMode({825, 800}), "Help");
+    RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!");
+
+    // logo
+    Image icon("assets/logo.png");
+    window.setIcon(icon);
+    
     
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
@@ -24,7 +29,7 @@ void helpScreen(){
         cout << "Image couldnt be loaded" << endl;
     }
     Sprite homeWSprite(homeWTexture); 
-    homeWSprite.setPosition({740,725});
+    homeWSprite.setPosition({700,685});
 
     // home black icon
     Texture homeBTexture;
@@ -32,7 +37,7 @@ void helpScreen(){
         cout << "Image couldnt be loaded" << endl;
     }
     Sprite homeBSprite(homeBTexture); 
-    homeBSprite.setPosition({740,725});
+    homeBSprite.setPosition({700,685});
 
 
     Font font("assets/BurbankBigCondensed-Black.otf"); // load the font
@@ -45,15 +50,23 @@ void helpScreen(){
 
     RectangleShape rectangle;
     rectangle.setSize({712, 700});
-    x=(825-712)/2.f;
-    y=(800-700)/2.f;
-    rectangle.setPosition({x, y});
-    rectangle.setFillColor(Color(0, 0, 0, 190));
+    rectangle.setOrigin({rectangle.getSize().x/2 , rectangle.getSize().y/2});
+    rectangle.setPosition({825/2, 800/2});
+    rectangle.setFillColor(Color(0, 0, 0));
+
+    RectangleShape rectangleBorder;
+    rectangleBorder.setSize({722, 710});
+    rectangleBorder.setOrigin({rectangleBorder.getSize().x/2 , rectangleBorder.getSize().y/2});
+    rectangleBorder.setPosition({825/2, 800/2});
+    rectangleBorder.setFillColor(Color::White);
+
 
     Text instructions(font);
     instructions.setCharacterSize(35);
     instructions.setFillColor(Color::White);
-    instructions.setPosition({x+25, y+100});
+    x=(825-712)/2.f;
+    y=(800-700)/2.f;
+    instructions.setPosition({x+25, y+120});
     instructions.setString(
         " How to play faboulous fred?\n\n" "1. Memorize the color sequence. \n\n 2. Use the arrow keys to move around the board.\n\n"
     "3. Press enter to select a color.\n\n" "4. The game will end if you choose wrong.\n\n" "5. You will earn points if you get the sequence right.\n\n"
@@ -104,6 +117,7 @@ void helpScreen(){
     
         window.clear();
         window.draw(backgSprite);
+        window.draw(rectangleBorder);
         window.draw(rectangle);
         window.draw(title);
         window.draw(instructions);

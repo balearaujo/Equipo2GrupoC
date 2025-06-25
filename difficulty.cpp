@@ -5,7 +5,12 @@ using namespace std;
 using namespace sf;
 
 void screenSelectDifficulty(){
-    RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred"); // creates the 825x800 window
+    RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred!"); // creates the 825x800 window
+
+    // logo
+    Image icon("assets/logo.png");
+    window.setIcon(icon);
+    
 
     //BACKGROUND
     Texture backgTexture;
@@ -143,11 +148,11 @@ void screenSelectDifficulty(){
                     // Action based on the currently selected button (posAux)
                     if (posAux==0){
                         window.close();
-                        screenGame(4);
+                        screenGame(0, 4, 0, 0, false);
                     } 
                     else if (posAux==1){
                         window.close();
-                        screenGame(9);
+                        screenGame(0, 9, 0, 0, false);
                     } 
                     else{
                         window.close();

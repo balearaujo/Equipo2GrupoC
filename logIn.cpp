@@ -7,7 +7,6 @@ using namespace std;
 
 void screenLogIn(){
     RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred!");
-    window.setTitle("Log in");
     
     // logo
     Image icon("assets/logo.png");

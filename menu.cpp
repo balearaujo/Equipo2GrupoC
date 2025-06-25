@@ -5,7 +5,12 @@ using namespace std;
 using namespace sf;
 
 void screenMenu(){
-    RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred"); // creates the 825x800 window
+    RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred!"); // creates the 825x800 window
+
+    // logo
+    Image icon("assets/logo.png");
+    window.setIcon(icon);
+    
 
     // BACKGROUND 
     // texture store the image data 
@@ -259,6 +264,8 @@ void screenMenu(){
                             screenLeaderboard();
                             break;
                         case 2:
+                            window.close();
+                            screenLoadGame();
                             break;
                         case 3:
                             window.close();
