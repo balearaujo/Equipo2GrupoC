@@ -274,6 +274,8 @@ void screenMenu(){
                         case 2:
                             break;
                         case 3:
+                            window.close();
+                            helpScreen();
                             break;
                         case 4:
                             window.close();

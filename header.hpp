@@ -48,6 +48,8 @@ void screenSelectDifficulty();
             
 // main.cpp
 void screenMainMenu();
+//help.cpp
+void helpScreen();
 
 
 

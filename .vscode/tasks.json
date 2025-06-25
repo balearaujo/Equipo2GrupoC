@@ -15,6 +15,7 @@
 				"leaderboard.cpp", 
 				"menu.cpp", 
 				"difficulty.cpp", 
+				"help.cpp",
 				"-I${workspaceFolder}/include",
 				"-DSFML_STATIC",
 				"-o",
