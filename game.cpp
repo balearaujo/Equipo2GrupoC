@@ -290,7 +290,7 @@ void saveGame(int *gameSequence, int gsequencePos, States game, int score, int s
     }
 
     ostringstream newGameStream; // string to concat all the information of the game 
-    // [idGame, date, score, status, sequence]
+    // [idGame, date, size, score, status, sequence]
     newGameStream << "[" << currentUser.nGames << "," << date << "," << size << "," << score << "," << static_cast<int>(game) << "," << sequence.str() << "]";
 
     ifstream games("games.txt"); // ifstream is used to open a file in reading mode
