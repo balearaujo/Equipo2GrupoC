@@ -198,6 +198,34 @@ void screenGame(int size) {
                 if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){ //ask if enter is being pressed
                     if(entered==false){
                         entered=true;
+
+                        for (int k=0; k<2;k++) { //if 0 is white, else normal color
+                            window.clear();
+                            window.draw(backgSprite);
+
+                            for(int i=0; i<rows; i++){
+                                for(int j=0; j<columns; j++){
+                                    RectangleShape rectangle;
+                                    (size == 9 ? rectangle.setSize({140.f,140.f}) : rectangle.setSize({200.f,200.f}));
+                                    (size == 9 ? rectangle.setPosition({j*185.f+233.f, i*185.f+220.f}) : rectangle.setPosition({j*250.f+285.f, i*250.f+270.f}));
+                                    rectangle.setOrigin({rectangle.getSize().x/2, rectangle.getSize().y/2});
+
+                                    //if its selected changes color
+                                    if (i == row && j == col &&(k%2)==0) {
+                                        rectangle.setFillColor(Color::White);
+                                    } else {
+                                        rectangle.setFillColor(lighterCol[mat[i][j]]);
+                                    }
+
+                                    window.draw(rectangle);
+                                }
+                            }
+
+                            window.draw(tPoints);
+                            window.draw(tTurn);
+                            window.display();
+                            sleep(milliseconds(130)); // color change duration
+                        }
                         userInput[userinPos]=row*(size == 4 ? 2: 3)+col; //saves matrix position into an array
                         if(userInput[userinPos]!=gameSequence[userinPos]){ //if the user selects a position that dosen't match the game ends
                             game=End; 
@@ -376,7 +404,7 @@ void saveGame(int *gameSequence, int gsequencePos, States game, int score, int s
     record.aa = time_now->tm_year + 1900;
 
     // Save to binary file users.dat
-    FILE* usersFile = fopen("leaderb.dat", "ab"); 
+    FILE* usersFile = fopen("leaderb.dat", "ab"); // append binary mode
     if (usersFile != NULL) {
         fwrite(&record, sizeof(ScoreRecord), 1, usersFile);
         fclose(usersFile);
