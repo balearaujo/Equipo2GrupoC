@@ -2,6 +2,7 @@
 #include "header.hpp"
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include <iostream>
 #include <fstream>
 using namespace sf;
@@ -50,6 +51,7 @@ void screenGame(int size) {
     Font font("assets/BurbankBigCondensed-Black.otf");
 
     int countPoints{0};
+    int pointMultiplier = (size == 4 ? 1 : 2); // 1 for EASY level, 2 for HARD level
     Text tPoints(font, "Points: " + to_string(countPoints), 50);
     tPoints.setFillColor(Color::White);
     tPoints.setOrigin({75,20});
@@ -178,7 +180,7 @@ void screenGame(int size) {
                         game=showingSequence;
                         show=0;
                         showlighterCol=true;
-                        countPoints++;
+                        countPoints += pointMultiplier;
                         tPoints.setString("Points: " + to_string(countPoints));
                         clock.restart();
                     }
@@ -325,4 +327,22 @@ void saveGame(int *gameSequence, int gsequencePos, States game, int score, int s
 
     remove("games.txt"); // remove original file and rename temporal file.
     rename("gamesTemp.txt", "games.txt");
+
+    // create a struct that saves the information needed for the leaderboard
+    ScoreRecord record;
+    strcpy(record.name, currentUser.username);  // copy the username
+    record.score = score;
+    record.dd = time_now->tm_mday;
+    record.mm = time_now->tm_mon + 1;           // tm_mon starts from 0
+    record.aa = time_now->tm_year + 1900;
+
+    // Save to binary file users.dat
+    FILE* usersFile = fopen("leaderb.dat", "ab"); // append binary mode
+    if (usersFile != NULL) {
+        fwrite(&record, sizeof(ScoreRecord), 1, usersFile);
+        fclose(usersFile);
+    } else {
+        cout << "Error opening leaderb.dat" << endl;
+    }
+
 }

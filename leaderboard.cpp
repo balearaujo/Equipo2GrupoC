@@ -1,27 +1,31 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "header.hpp"
+#include <algorithm>
 using namespace std;
 using namespace sf;
 
-struct User2{
-    char name[16];
-    int score;
-    int dd;
-    int mm;
-    int aa;
-};
-
 void screenLeaderboard() {
-    User2 data;
-    FILE *users;
+    ScoreRecord data;
+    vector<ScoreRecord> allUsers;
 
-    users = fopen("users.dat","rb");
-
-    if(users==NULL){
-        cout << "Error";
+    // Read all records from binary file
+    FILE* users = fopen("leaderb.dat", "rb");
+    if (users == NULL) {
+        cout << "Error opening users.dat" << endl;
         return;
     }
+    while (fread(&data, sizeof(ScoreRecord), 1, users)) {
+        allUsers.push_back(data);
+    }
+    fclose(users);
+
+    // Sort users by score descending
+    sort(allUsers.begin(), allUsers.end(), [](const ScoreRecord& a, const ScoreRecord& b) {
+        return a.score > b.score;
+    });
+
+    int totalUsers = allUsers.size();
 
     RenderWindow window(sf::VideoMode({825, 800}), "Leaderboard"); // creates the 825x800 window
 
@@ -141,14 +145,8 @@ void screenLeaderboard() {
     tNextBtn.setOrigin({75, 20});
     tNextBtn.setPosition({740, 725});
 
-    int totalUsers = 0;
-    while (fread(&data,sizeof(User),1,users)){
-        totalUsers++;
-    }
-    fclose(users);
-
     int actualPage = 1;
-    int lastPage = totalUsers/11 + 1;
+    int lastPage = (totalUsers + 9) / 10;
     int actualUser = actualPage*10-9;
     int lastUserPage = actualPage*10;
     vector<Text> ranks;
@@ -164,42 +162,48 @@ void screenLeaderboard() {
     }
 
     int index=0;
-    while (fread(&data,sizeof(User),1,users) && actualUser <= lastUserPage && actualUser<=totalUsers){
-        Text rank(font, to_string(actualUser), 32);
-        rank.setOrigin({150,40});
-        rank.setPosition({230, 270.0f + index * 45.0f});
-        if (actualUser == 1){
-            rank.setFillColor(Color(255, 215, 0)); // golden
+    // Loop through users to display on the current page (pagination)
+    for (int i = actualUser - 1; i < lastUserPage && i < totalUsers; ++i) {
+        ScoreRecord& data = allUsers[i]; // Access the i-th user in the vector
+
+        // Create rank text (1-based index)
+        Text rank(font, to_string(i + 1), 32);
+        rank.setOrigin({150, 40});
+        // Position vertically based on current page and index
+        rank.setPosition({230, 270.0f + (i - (actualUser - 1)) * 45.0f});
+        // Highlight the first place with gold color
+        if (i == 0) {
+            rank.setFillColor(Color(255, 215, 0)); // Gold color
         }
         ranks.push_back(rank);
 
+        // Create username text
         Text username(font, data.name, 32);
-        username.setOrigin({150,40});
-        username.setPosition({280, 270.0f + index * 45.0f});
-        if (actualUser == 1){
+        username.setOrigin({150, 40});
+        username.setPosition({280, 270.0f + (i - (actualUser - 1)) * 45.0f});
+        if (i == 0) {
             username.setFillColor(Color(255, 215, 0));
         }
         usernames.push_back(username);
 
+        // Create score text
         Text score(font, to_string(data.score), 32);
-        score.setOrigin({150,40});
-        score.setPosition({575, 270.0f + index * 45.0f});
-        if (actualUser == 1){
+        score.setOrigin({150, 40});
+        score.setPosition({575, 270.0f + (i - (actualUser - 1)) * 45.0f});
+        if (i == 0) {
             score.setFillColor(Color(255, 215, 0));
         }
         scores.push_back(score);
 
+        // Format date as dd-mm-yyyy
         string dateText = to_string(data.dd) + "-" + to_string(data.mm) + "-" + to_string(data.aa);
         Text date(font, dateText, 32);
-        date.setOrigin({150,40});
-        date.setPosition({775, 270.0f + index * 45.0f});
-        if (actualUser == 1){
+        date.setOrigin({150, 40});
+        date.setPosition({775, 270.0f + (i - (actualUser - 1)) * 45.0f});
+        if (i == 0) {
             date.setFillColor(Color(255, 215, 0));
         }
         dates.push_back(date);
-
-        actualUser++;
-        index++;
     }
     fclose(users);
 
@@ -280,7 +284,7 @@ void screenLeaderboard() {
                     nextBtnBorder.setFillColor(Color::Black);
 
                     if (const auto* key = event->getIf<Event::KeyPressed>()){
-                        if (key->scancode == Keyboard::Scancode::Escape){
+                        if (key->scancode == Keyboard::Scancode::Enter){
                             window.close();
                             screenMenu();
                         }
@@ -298,7 +302,7 @@ void screenLeaderboard() {
                     menuBtn.setFillColor(Color(130,130,130));
                     menuBtnBorder.setFillColor(Color::Black);
                     if (const auto* key = event->getIf<Event::KeyPressed>()){
-                        if (key->scancode == Keyboard::Scancode::Escape){
+                        if (key->scancode == Keyboard::Scancode::Enter){
                             if (!enterPressed && actualPage < lastPage) {
                                 actualPage++;
                                 needsUpdate = true;
@@ -316,64 +320,58 @@ void screenLeaderboard() {
         actualUser = actualPage*10-9;
         lastUserPage = actualPage*10;
 
-        if(needsUpdate){
+        if (needsUpdate) {
+            // Clear previous texts to update with new page data
             ranks.clear();
             usernames.clear();
             scores.clear();
             dates.clear();
 
-            users = fopen("users.dat","rb");
+            for (int i = actualUser - 1; i < lastUserPage && i < totalUsers; ++i) {
+                ScoreRecord& data = allUsers[i]; // Get user data from vector
 
-            if(users==NULL){
-                cout << "Error";
-                return;
-            }
-
-            fseek(users, (actualUser - 1) * sizeof(User), SEEK_SET);
-
-            index = 0;
-
-            while (fread(&data,sizeof(User2),1,users) && actualUser <= lastUserPage && actualUser<=totalUsers){
-                Text rank(font, to_string(actualUser), 32);
-                rank.setOrigin({150,40});
-                rank.setPosition({230, 270.0f + index * 45.0f});
-                if (actualUser == 1){
-                    rank.setFillColor(Color(255, 215, 0)); // golden
+                // Create rank text 
+                Text rank(font, to_string(i + 1), 32);
+                rank.setOrigin({150, 40});
+                rank.setPosition({230, 270.0f + (i - (actualUser - 1)) * 45.0f});
+                // Highlight first place with gold color
+                if (i == 0) {
+                    rank.setFillColor(Color(255, 215, 0));
                 }
                 ranks.push_back(rank);
 
+                // Create username text
                 Text username(font, data.name, 32);
-                username.setOrigin({150,40});
-                username.setPosition({280, 270.0f + index * 45.0f});
-                if (actualUser == 1){
+                username.setOrigin({150, 40});
+                username.setPosition({280, 270.0f + (i - (actualUser - 1)) * 45.0f});
+                if (i == 0) {
                     username.setFillColor(Color(255, 215, 0));
                 }
                 usernames.push_back(username);
 
+                // Create score text
                 Text score(font, to_string(data.score), 32);
-                score.setOrigin({150,40});
-                score.setPosition({575, 270.0f + index * 45.0f});
-                if (actualUser == 1){
+                score.setOrigin({150, 40});
+                score.setPosition({575, 270.0f + (i - (actualUser - 1)) * 45.0f});
+                if (i == 0) {
                     score.setFillColor(Color(255, 215, 0));
                 }
                 scores.push_back(score);
 
+                // Format date as dd-mm-yyyy
                 string dateText = to_string(data.dd) + "-" + to_string(data.mm) + "-" + to_string(data.aa);
                 Text date(font, dateText, 32);
-                date.setOrigin({150,40});
-                date.setPosition({775, 270.0f + index * 45.0f});
-                if (actualUser == 1){
+                date.setOrigin({150, 40});
+                date.setPosition({775, 270.0f + (i - (actualUser - 1)) * 45.0f});
+                if (i == 0) {
                     date.setFillColor(Color(255, 215, 0));
                 }
                 dates.push_back(date);
-
-                actualUser++;
-                index++;
             }
-            fclose(users);
 
             needsUpdate = false;
         }
+
 
         window.clear(Color::Black); // clear the window to draw the next frame
         window.draw(backgSprite);

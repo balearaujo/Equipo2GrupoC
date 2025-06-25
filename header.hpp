@@ -10,6 +10,15 @@ struct User{
 
 extern User currentUser; // struct with extern because its declared in main.cpp
 
+// struct used for the leaderboard
+struct ScoreRecord{
+    char name[16];
+    int score;
+    int dd;
+    int mm;
+    int aa;
+};
+
 // signUp.cpp funciones
 void screenSignUp();
 void setInputValues(sf::Text &, const sf::Event &, sf::String &, sf::Text &);
