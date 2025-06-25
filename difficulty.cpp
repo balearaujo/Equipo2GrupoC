@@ -18,6 +18,22 @@ void screenSelectDifficulty(){
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
     backgSprite.setScale({scaleX, scaleY});
 
+    // home white icon
+    Texture homeWTexture;
+    if (!homeWTexture.loadFromFile("assets/home-icon-white.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeWSprite(homeWTexture); 
+    homeWSprite.setPosition({740,725});
+
+    // home black icon
+    Texture homeBTexture;
+    if (!homeBTexture.loadFromFile("assets/home-icon-black.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeBSprite(homeBTexture); 
+    homeBSprite.setPosition({740,725});
+
     // TITLE
     Font font("assets/BurbankBigCondensed-Black.otf"); // load the font
     Text title(font, "SELECT DIFFICULTY", 90); // declare the text, its font, content and size
@@ -60,26 +76,9 @@ void screenSelectDifficulty(){
     tHardBtn.setOrigin({75, 20});
     tHardBtn.setPosition({405, 450});
 
-     // MENU BUTTON
-    RectangleShape menuBtn;
-    menuBtn.setSize(Vector2f(300,75));
-    menuBtn.setFillColor(Color(75,75,75));
-    menuBtn.setOrigin({(menuBtn.getSize().x)/2 , (menuBtn.getSize().y)/2});
-    menuBtn.setPosition({412, 630}); // x,y
-
-    RectangleShape menuBtnBorder;
-    menuBtnBorder.setSize(Vector2f(320,90));
-    menuBtnBorder.setFillColor(Color::Black);
-    menuBtnBorder.setOrigin({(menuBtnBorder.getSize().x)/2 , (menuBtnBorder.getSize().y)/2});
-    menuBtnBorder.setPosition({412, 630}); // x,y
-
-    Text tMenuBtn(font, "MENU", 60);
-    tMenuBtn.setFillColor(Color::White);
-    tMenuBtn.setOrigin({75, 20});
-    tMenuBtn.setPosition({420, 610});
-
-    // 0 = easy, 1 = hard, 2 = menu
+    // 0 = easy, 1 = hard, 2 = home button
     int posAux = 0;
+    bool homeIconHover = false;
 
     // Main loop
     while (window.isOpen()) {
@@ -111,13 +110,7 @@ void screenSelectDifficulty(){
                     // rest stay default
                     hardBtn.setFillColor(Color(130,130,130));
                     hardBtnBorder.setFillColor(Color::Black);
-                    menuBtn.setFillColor(Color(75,75,75));
-                    menuBtnBorder.setFillColor(Color::Black);
-
-                    if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        // EASY action
-                    }
-
+                    homeIconHover = false;
                     break;
                 case 1:
                     // HARD button selected
@@ -127,22 +120,18 @@ void screenSelectDifficulty(){
                     // rest stay default
                     easyBtn.setFillColor(Color(130,130,130));
                     easyBtnBorder.setFillColor(Color::Black);
-                    menuBtn.setFillColor(Color(75,75,75));
-                    menuBtnBorder.setFillColor(Color::Black);
-
+                    homeIconHover = false;
                     break;
 
                 case 2:
-                    // MENU button selected
-                    menuBtn.setFillColor(Color(253,114,114));
-                    menuBtnBorder.setFillColor(Color::Red);
-
                     // rest stay default
-                    easyBtn.setFillColor(Color(130,130,130));
-                    easyBtnBorder.setFillColor(Color::Black);
                     hardBtn.setFillColor(Color(130,130,130));
                     hardBtnBorder.setFillColor(Color::Black);
+                    easyBtn.setFillColor(Color(130,130,130));
+                    easyBtnBorder.setFillColor(Color::Black);
 
+                    // HOME button selected
+                    homeIconHover = true;
                     break;
             } 
             
@@ -178,9 +167,11 @@ void screenSelectDifficulty(){
         window.draw(hardBtn);
         window.draw(tHardBtn);
 
-        window.draw(menuBtnBorder);
-        window.draw(menuBtn);
-        window.draw(tMenuBtn);
+        if (homeIconHover){
+            window.draw(homeBSprite);
+        } else {
+            window.draw(homeWSprite);
+        }
 
         // show what was drawn
         window.display();
