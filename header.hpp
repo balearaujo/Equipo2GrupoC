@@ -52,7 +52,7 @@ void screenMainMenu();
 
 
 // game.cpp
-enum States{showingSequence, userTurn, End}; // global enum 
+enum States{showingSequence, userTurn, End, gamePaused}; // global enum 
 void screenGame(int);
 void saveGame(int *, int, States, int, int);
 

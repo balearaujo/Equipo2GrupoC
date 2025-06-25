@@ -50,6 +50,25 @@ void screenGame(int size) {
 
     Font font("assets/BurbankBigCondensed-Black.otf");
 
+    // home black icon
+    Texture homeBTexture;
+    if (!homeBTexture.loadFromFile("assets/home-icon-black.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeBSprite(homeBTexture); 
+    homeBSprite.setPosition({825/2,450});
+
+    // pause menu
+    RectangleShape bgPause(Vector2f{600 , 650});
+    bgPause.setFillColor(Color(20,20,40));
+    bgPause.setOrigin({bgPause.getSize().x/2, bgPause.getSize().y/2});
+    bgPause.setPosition({825/2, 800/2});
+    Text tPause(font, "PAUSE", 60);
+    tPause.setOrigin({80,21});
+    tPause.setFillColor(Color::White);
+    tPause.setPosition({825/2, 500});
+
+
     int countPoints{0};
     int pointMultiplier = (size == 4 ? 1 : 2); // 1 for EASY level, 2 for HARD level
     Text tPoints(font, "Points: " + to_string(countPoints), 50);
@@ -105,164 +124,183 @@ void screenGame(int size) {
     clock.restart(); //restart clock
 
     int r, c;
+    bool escape = false;
 
     while(window.isOpen())
     {
         while(const std::optional event = window.pollEvent())
         {
-            if(event->is<Event::Closed>())
-                window.close();
-        }
-    
-        if(game==showingSequence){ //ask if it´s the game´s turn
-
-            timePassed=clock.getElapsedTime().asSeconds(); //get how much time ha   s passed
-            if(showlighterCol){ //ask is the color its going to change
-                if(timePassed>onTime){ //ask if its on time to be lighter
-                    showlighterCol=false; //change to false
-                    clock.restart(); //restart clock
+            if(event->is<Event::Closed>()) window.close();
+            
+            if (const auto *key = event->getIf<Event::KeyPressed>()){ // escape logic to be able to have a pause menu
+                if ((key->scancode == Keyboard::Scancode::Escape) && (escape == false)){
+                    escape = true;
                 }
-            }
-            else
-            {
-                if(timePassed>offTime){
-                    show++; //increase the position its showing
-                    if(show<gsequencePos){ //change into original color
-                        showlighterCol = true;
-                        clock.restart();
-                    }
-                else{
-                    //change the values to zero and calls to user turn
-                        game=userTurn;
-                        show=0;
-                        userinPos=0;
-                        moveClock.restart();
-                    }
-                }
-            }
-        }
-        else if(game==userTurn){
-            if(moveClock.getElapsedTime().asSeconds()>moveDelay) //HERE
-            {
-                //Move rows or columns based on pressed key and validate if movement is posible by checking Matrix boundaries.
-                    if (Keyboard::isKeyPressed(Keyboard::Key::Up) && row>0){ 
-                    row--;
-                    moveClock.restart();
-                    } else {
-                    if (Keyboard::isKeyPressed(Keyboard::Key::Down) && row<(size==4 ? 1 : 2)){
-                        row++;
-                        moveClock.restart();
-                    } else {
-                        
-                        if (Keyboard::isKeyPressed(Keyboard::Key::Right) && col<(size==4 ? 1 : 2 )){
-                            col++;
-                            moveClock.restart();
-                        
-                        } if (Keyboard::isKeyPressed(Keyboard::Key::Left) && col>0){
-                            col--;
-                            moveClock.restart();
-                        }
-                    }
+                else if ((key->scancode == Keyboard::Scancode::Escape) && (escape == true)){
+                    escape = false;
                 } 
             }
-            if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){ //ask if enter is being pressed
-                if(entered==false){
-                    entered=true;
-                    userInput[userinPos]=row*(size == 4 ? 2: 3)+col; //saves matrix position into an array
-                    if(userInput[userinPos]!=gameSequence[userinPos]){ //if the user selects a position that dosen't match the game ends
-                        game=End; 
-                    }  else{
-                    userinPos++; //move to the next position
-                    if(userinPos==gsequencePos){
-                        //if it is the same position of the sequence, you move to the next one and add a new step to the sequence
-                        gameSequence[gsequencePos]=rand()%(size==4 ? 4 : 9);
-                        gsequencePos++;
-                        game=showingSequence;
-                        show=0;
-                        showlighterCol=true;
-                        countPoints += pointMultiplier;
-                        tPoints.setString("Points: " + to_string(countPoints));
-                        clock.restart();
-                    }
-                }
-                sleep(milliseconds(150));
-                }
-
-            } else {
-                entered=false;
-            }
-        }
-        
-        // text when the sequence is showing or its player turn
-        if (game==userTurn){
-            tTurn.setPosition({740/2, 720});
-            tTurn.setString("YOUR TURN!");
-        }
-        else if (game==showingSequence){
-            tTurn.setPosition({200, 720});
-            tTurn.setString("MEMORIZE THE SEQUENCE!");
-        } 
-        
-        //if the game ends close the window
-        if(game==End){
-            // delete dynamic memory
-            for (int i = 0; i < rows; ++i) {
-                delete[] mat[i];
-            }
-            delete[] mat;
-            delete[] gameSequence;
-            delete[] userInput;
-            // call function to save the game information
-            saveGame(gameSequence, gsequencePos, game, countPoints, size);
-            // increase by one the game number of the user
-            currentUser.nGames++;
-            window.close();
-            screenMenu();
         }
         window.clear();
-        window.draw(backgSprite);
+        window.draw(backgSprite);    
+        if (!escape){
+            if(game==showingSequence){ //ask if it´s the game´s turn
         
-        //Draw Matrix
-        for(int i=0; i<rows; i++){
-            for(int j=0; j<columns; j++){
-                RectangleShape rectangle; //set the shape and the size of the rectangles
-                (size == 9 ? rectangle.setSize({140.f,140.f}) : rectangle.setSize({200.f,200.f}));
-                (size == 9 ? rectangle.setPosition({j*185.f+233.f, i*185.f+220.f}) : rectangle.setPosition({j*250.f+285.f, i*250.f+270.f})); //set the position of rectangles with spaces
-                rectangle.setOrigin({rectangle.getSize().x/2, rectangle.getSize().y/2});
-                if(game==showingSequence && show< gsequencePos)
-                {
-                    //turns the array of positions into matrix rows and columns 
-                    r=gameSequence[show]/rows;
-                    c=gameSequence[show]%columns;
-
-                    if(i==r && j==c){ //ask if our postion is the pattern
-                        if(showlighterCol){  //ask if its time to light it
-                            rectangle.setFillColor(lighterCol[mat[i][j]]); //Colors it Red
-                            rectangle.setScale({1.3, 1.3});
-                        }else{
-                            rectangle.setFillColor(lighterCol[mat[i][j]]); //filled rectangles with the ligher versions of colors
-                        }
-                    }
-                    else{
-                        rectangle.setFillColor(lighterCol[mat[i][j]]); 
+                timePassed=clock.getElapsedTime().asSeconds(); //get how much time ha   s passed
+                if(showlighterCol){ //ask is the color its going to change
+                    if(timePassed>onTime){ //ask if its on time to be lighter
+                        showlighterCol=false; //change to false
+                        clock.restart(); //restart clock
                     }
                 }
-                else if(game==userTurn){ //ask if its the user turn
-                    if(i==row && j==col) //ask if its being selected
-                        rectangle.setFillColor(colors[mat[i][j]]); //colors it with a darker version
+                else
+                {
+                    if(timePassed>offTime){
+                        show++; //increase the position its showing
+                        if(show<gsequencePos){ //change into original color
+                            showlighterCol = true;
+                            clock.restart();
+                        }
+                    else{
+                        //change the values to zero and calls to user turn
+                            game=userTurn;
+                            show=0;
+                            userinPos=0;
+                            moveClock.restart();
+                        }
+                    }
+                }
+            }
+            else if(game==userTurn){
+                if(moveClock.getElapsedTime().asSeconds()>moveDelay) //HERE
+                {
+                    //Move rows or columns based on pressed key and validate if movement is posible by checking Matrix boundaries.
+                        if (Keyboard::isKeyPressed(Keyboard::Key::Up) && row>0){ 
+                        row--;
+                        moveClock.restart();
+                        } else {
+                        if (Keyboard::isKeyPressed(Keyboard::Key::Down) && row<(size==4 ? 1 : 2)){
+                            row++;
+                            moveClock.restart();
+                        } else {
+                            
+                            if (Keyboard::isKeyPressed(Keyboard::Key::Right) && col<(size==4 ? 1 : 2 )){
+                                col++;
+                                moveClock.restart();
+                            
+                            } if (Keyboard::isKeyPressed(Keyboard::Key::Left) && col>0){
+                                col--;
+                                moveClock.restart();
+                            }
+                        }
+                    } 
+                }
+                if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){ //ask if enter is being pressed
+                    if(entered==false){
+                        entered=true;
+                        userInput[userinPos]=row*(size == 4 ? 2: 3)+col; //saves matrix position into an array
+                        if(userInput[userinPos]!=gameSequence[userinPos]){ //if the user selects a position that dosen't match the game ends
+                            game=End; 
+                        }  else{
+                        userinPos++; //move to the next position
+                        if(userinPos==gsequencePos){
+                            //if it is the same position of the sequence, you move to the next one and add a new step to the sequence
+                            gameSequence[gsequencePos]=rand()%(size==4 ? 4 : 9);
+                            gsequencePos++;
+                            game=showingSequence;
+                            show=0;
+                            showlighterCol=true;
+                            countPoints += pointMultiplier;
+                            tPoints.setString("Points: " + to_string(countPoints));
+                            clock.restart();
+                        }
+                    }
+                    sleep(milliseconds(150));
+                    }
+        
+                } else {
+                    entered=false;
+                }
+            }
+            
+            // text when the sequence is showing or its player turn
+            if (game==userTurn){
+                tTurn.setPosition({740/2, 720});
+                tTurn.setString("YOUR TURN!");
+            }
+            else if (game==showingSequence){
+                tTurn.setPosition({200, 720});
+                tTurn.setString("MEMORIZE THE SEQUENCE!");
+            } 
+            
+            //if the game ends close the window
+            if(game==End){
+                // delete dynamic memory
+                for (int i = 0; i < rows; ++i) {
+                    delete[] mat[i];
+                }
+                delete[] mat;
+                delete[] gameSequence;
+                delete[] userInput;
+                // call function to save the game information
+                saveGame(gameSequence, gsequencePos, game, countPoints, size);
+                // increase by one the game number of the user
+                currentUser.nGames++;
+                window.close();
+                screenMenu();
+            }
+            //Draw Matrix
+            for(int i=0; i<rows; i++){
+                for(int j=0; j<columns; j++){
+                    RectangleShape rectangle; //set the shape and the size of the rectangles
+                    (size == 9 ? rectangle.setSize({140.f,140.f}) : rectangle.setSize({200.f,200.f}));
+                    (size == 9 ? rectangle.setPosition({j*185.f+233.f, i*185.f+220.f}) : rectangle.setPosition({j*250.f+285.f, i*250.f+270.f})); //set the position of rectangles with spaces
+                    rectangle.setOrigin({rectangle.getSize().x/2, rectangle.getSize().y/2});
+                    if(game==showingSequence && show< gsequencePos)
+                    {
+                        //turns the array of positions into matrix rows and columns 
+                        r=gameSequence[show]/rows;
+                        c=gameSequence[show]%columns;
+        
+                        if(i==r && j==c){ //ask if our postion is the pattern
+                            if(showlighterCol){  //ask if its time to light it
+                                rectangle.setFillColor(lighterCol[mat[i][j]]); //Colors it Red
+                                rectangle.setScale({1.3, 1.3});
+                            }else{
+                                rectangle.setFillColor(lighterCol[mat[i][j]]); //filled rectangles with the ligher versions of colors
+                            }
+                        }
+                        else{
+                            rectangle.setFillColor(lighterCol[mat[i][j]]); 
+                        }
+                    }
+                    else if(game==userTurn){ //ask if its the user turn
+                        if(i==row && j==col) //ask if its being selected
+                            rectangle.setFillColor(colors[mat[i][j]]); //colors it with a darker version
+                        else{
+                            rectangle.setFillColor(lighterCol[mat[i][j]]); //filled rectangles with the lighter versions of colors
+                        }
+                    }
                     else{
                         rectangle.setFillColor(lighterCol[mat[i][j]]); //filled rectangles with the lighter versions of colors
                     }
+        
+                    window.draw(rectangle);
                 }
-                else{
-                    rectangle.setFillColor(lighterCol[mat[i][j]]); //filled rectangles with the lighter versions of colors
-                }
-
-                window.draw(rectangle);
             }
+            window.draw(tPoints);
+            window.draw(tTurn);
+        } else {
+            if (Keyboard::isKeyPressed(Keyboard::Key::Enter)){
+                game = gamePaused;
+                saveGame(gameSequence, gsequencePos, game, countPoints, size);
+                window.close();
+                screenMenu();
+            }
+            window.draw(bgPause);
+            window.draw(tPause);
+            window.draw(homeBSprite);
         }
-        window.draw(tPoints);
-        window.draw(tTurn);
         window.display();
     }
 }
@@ -328,7 +366,8 @@ void saveGame(int *gameSequence, int gsequencePos, States game, int score, int s
     remove("games.txt"); // remove original file and rename temporal file.
     rename("gamesTemp.txt", "games.txt");
 
-    // create a struct that saves the information needed for the leaderboard
+    
+    // create a struct that saves ONLY the information needed for the leaderboard
     ScoreRecord record;
     strcpy(record.name, currentUser.username);  // copy the username
     record.score = score;
