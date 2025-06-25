@@ -7,12 +7,15 @@ using namespace sf;
 void screenMenu(){
     RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred"); // creates the 825x800 window
 
+    // BACKGROUND 
+    // texture store the image data 
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
         cout << "Image couldnt be loaded" << endl;
         return;
     }
 
+    // sprite is a image that gets drawn in the screen
     Sprite backgSprite(backgTexture); 
     float scaleX = float(window.getSize().x) / backgTexture.getSize().x;
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
@@ -123,18 +126,23 @@ void screenMenu(){
         while (const optional event = window.pollEvent()){ // check and handle window events
             if (event->is<sf::Event::Closed>()) // check if the event was closing the window
                 window.close();
+
+            // if scape is pressed the screen returns to the main menu
             if (const auto* key = event->getIf<Event::KeyPressed>()){
-                if (key->scancode == Keyboard::Scancode::Escape){
+                if (key->scancode == Keyboard::Scancode::Escape){ 
                     window.close();
                     screenMainMenu();
                 }
             }
+
+            // if key down is pressed and its not the last button, move selection to the next button
             if (posAux>= 0 && posAux<4){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
                     posAux++;
                 }
             }
 
+            // if key up is pressed and its not the first button, move selection to the prev button
             if (posAux> 0 && posAux<=4){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Up)){
                     posAux--;
@@ -159,11 +167,6 @@ void screenMenu(){
 
                     logOutBtn.setFillColor(Color(75,75,75));
                     logOutBtnBorder.setFillColor(Color::Black);
-
-                    if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        
-                    }
-
                     break;
 
                 case 1:
@@ -183,10 +186,6 @@ void screenMenu(){
 
                     logOutBtn.setFillColor(Color(75,75,75));
                     logOutBtnBorder.setFillColor(Color::Black);
-
-                    if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        // LEADERBOARD action
-                    }
                     break;
 
                 case 2:
@@ -206,10 +205,6 @@ void screenMenu(){
 
                     logOutBtn.setFillColor(Color(75,75,75));
                     logOutBtnBorder.setFillColor(Color::Black);
-
-                    if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        // LOAD GAME action
-                    }
                     break;
 
                 case 3:
@@ -229,10 +224,6 @@ void screenMenu(){
 
                     logOutBtn.setFillColor(Color(75,75,75));
                     logOutBtnBorder.setFillColor(Color::Black);
-
-                    if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        // HELP action
-                    }
                     break;
 
                 case 4:
@@ -252,16 +243,12 @@ void screenMenu(){
 
                     helpBtn.setFillColor(Color(130,130,130));
                     helpBtnBorder.setFillColor(Color::Black);
-
-                    if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){
-                        window.close();
-                        screenMainMenu();
-                    }
                     break;
             }
             
             if (const auto *key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Enter){
+                    // Action based on the currently selected button (posAux)
                     switch(posAux){
                         case 0:
                             window.close();

@@ -18,6 +18,23 @@ void helpScreen(){
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
     backgSprite.setScale({scaleX, scaleY});
 
+    // home white icon
+    Texture homeWTexture;
+    if (!homeWTexture.loadFromFile("assets/home-icon-white.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeWSprite(homeWTexture); 
+    homeWSprite.setPosition({740,725});
+
+    // home black icon
+    Texture homeBTexture;
+    if (!homeBTexture.loadFromFile("assets/home-icon-black.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeBSprite(homeBTexture); 
+    homeBSprite.setPosition({740,725});
+
+
     Font font("assets/BurbankBigCondensed-Black.otf"); // load the font
 
     Text title(font, "HELP", 90);
@@ -45,6 +62,11 @@ void helpScreen(){
     
     instructions.setOrigin({0,0});
     instructions.setPosition({x+20, y+115});
+
+    // 0 = home icon button
+    int posAux = -1;
+    bool homeIconHover = false; // boolean used for a change of icon if the home button is selected
+
     while (window.isOpen()) {
         while(const std::optional event = window.pollEvent())
         {
@@ -55,6 +77,29 @@ void helpScreen(){
                 window.close();
                 screenMenu();
             }
+
+            if (posAux==-1){
+                // if home button is selected the home icon changes
+                if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
+                    posAux++;
+                    homeIconHover = true;
+                }
+            }
+
+            if (posAux==0){
+                // if enter is pressed the screen returns to the menu
+                if (const auto* key = event->getIf<Event::KeyPressed>()){
+                    if (key->scancode == Keyboard::Scancode::Enter){
+                        window.close();
+                        screenMenu();
+                    }
+                }
+                // if home button isnt selected the home icon returns to default
+                if (Keyboard::isKeyPressed(Keyboard::Key::Up)){
+                    posAux--;
+                    homeIconHover = false;
+                }
+            }
         }
     
         window.clear();
@@ -62,6 +107,14 @@ void helpScreen(){
         window.draw(rectangle);
         window.draw(title);
         window.draw(instructions);
+
+        // depending in if the home icon is selected the icon changes
+        if (homeIconHover){
+            window.draw(homeBSprite);
+        } else {
+            window.draw(homeWSprite);
+        }
+
         window.display();
     }
 }

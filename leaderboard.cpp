@@ -9,59 +9,59 @@ void screenLeaderboard() {
     ScoreRecord data;
     vector<ScoreRecord> allUsers;
 
-    // Read all records from binary file
-    FILE* users = fopen("leaderb.dat", "rb");
-    if (users == NULL) {
-        cout << "Error opening users.dat" << endl;
+    // Read all records from the binary file "leaderb.dat"
+    FILE* leadbData = fopen("leaderb.dat", "rb");
+    if (leadbData == NULL) {
+        cout << "Error opening leaderb.dat" << endl;
         return;
     }
-    while (fread(&data, sizeof(ScoreRecord), 1, users)) {
+    // Read each ScoreRecord and store it in a vector
+    while (fread(&data, sizeof(ScoreRecord), 1, leadbData)) {
         allUsers.push_back(data);
     }
-    fclose(users);
+    fclose(leadbData);
 
-    // Sort users by score descending
+    // Sort the users descending by score
     sort(allUsers.begin(), allUsers.end(), [](const ScoreRecord& a, const ScoreRecord& b) {
         return a.score > b.score;
     });
 
     int totalUsers = allUsers.size();
 
-    RenderWindow window(sf::VideoMode({825, 800}), "Leaderboard"); // creates the 825x800 window
+    RenderWindow window(sf::VideoMode({825, 800}), "Leaderboard"); // Create a window
 
-    // BACKGROUND
+    // Load background texture
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
         cout << "Image couldnt be loaded" << endl;
         return;
     }
-
-    sf::Sprite backgSprite(backgTexture); 
+    Sprite backgSprite(backgTexture); 
     float scaleX = float(window.getSize().x) / backgTexture.getSize().x;
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
     backgSprite.setScale({scaleX, scaleY});
 
-    // TITLE
-    Font font("assets/BurbankBigCondensed-Black.otf"); // load the font
-    Text title(font, "LEADERBOARD", 90); // declare the text, its font, content and size
-    title.setOrigin({150,40}); // manually set origin for positioning
-    title.setPosition({350, 75}); 
+    // Load font and set title
+    Font font("assets/BurbankBigCondensed-Black.otf");
+    Text title(font, "LEADERBOARD", 90);
+    title.setOrigin({150,40});
+    title.setPosition({350, 75});
 
-    // MARGIN
+    // Create white translucent background margin
     RectangleShape margin;
-    margin.setSize(Vector2f(702,504)); // width, height
+    margin.setSize(Vector2f(702,504));
     margin.setFillColor(Color(255,255,255,150));
-    margin.setOrigin(margin.getSize() / 2.f); // center the origin
-    margin.setPosition({825 / 2.f, 425}); // x,y
+    margin.setOrigin(margin.getSize() / 2.f);
+    margin.setPosition({825 / 2.f, 425});
 
-    // HEADER ROW
+    // Header row for the leaderboard table
     RectangleShape headerRow;
-    headerRow.setSize(Vector2f(700,50)); // width, height
+    headerRow.setSize(Vector2f(700,50));
     headerRow.setFillColor(Color(10, 20, 60));
-    headerRow.setOrigin(headerRow.getSize() / 2.f); // center the origin
-    headerRow.setPosition({825 / 2.f, 200}); // x,y
-    
-    // HEADER TEXT
+    headerRow.setOrigin(headerRow.getSize() / 2.f);
+    headerRow.setPosition({825 / 2.f, 200});
+
+    // Set header labels
     Text rank(font, "#", 30); 
     rank.setOrigin({150,40}); 
     rank.setPosition({230, 225}); 
@@ -79,101 +79,87 @@ void screenLeaderboard() {
     date.setPosition({775, 220}); 
     date.setFillColor(Color(255, 255, 255, 150));
 
+    // Create alternating background rows
     vector<RectangleShape> rows;
     for (int i = 0; i < 10; ++i) {
         RectangleShape row;
         row.setSize(Vector2f(700, 44));
-        row.setFillColor(i % 2 == 0 ? Color(30, 30, 50) : Color(20, 20, 40)); // colores alternos
+        row.setFillColor(i % 2 == 0 ? Color(30, 30, 50) : Color(20, 20, 40));
         row.setOrigin(row.getSize() / 2.f);
-        row.setPosition({825 / 2.f, 248.0f + i * 45.0f}); // posición vertical
+        row.setPosition({825 / 2.f, 248.0f + i * 45.0f});
         rows.push_back(row);
     }
 
-    // NEXT BUTTON
-    RectangleShape prevBtn;
+    // Buttons for navigation
+    // PREV button
+    RectangleShape prevBtn, prevBtnBorder;
     prevBtn.setSize(Vector2f(125,40));
     prevBtn.setFillColor(Color(130,130,130));
-    prevBtn.setOrigin({(prevBtn.getSize().x)/2 , (prevBtn.getSize().y)/2});
-    prevBtn.setPosition({125, 730}); // x,y
-
-    RectangleShape prevBtnBorder;
+    prevBtn.setOrigin({prevBtn.getSize().x/2 , prevBtn.getSize().y/2});
+    prevBtn.setPosition({125, 730});
     prevBtnBorder.setSize(Vector2f(145,55));
     prevBtnBorder.setFillColor(Color::Black);
-    prevBtnBorder.setOrigin({(prevBtnBorder.getSize().x)/2 , (prevBtnBorder.getSize().y)/2});
-    prevBtnBorder.setPosition({125, 730}); // x,y
-
+    prevBtnBorder.setOrigin({prevBtnBorder.getSize().x/2 , prevBtnBorder.getSize().y/2});
+    prevBtnBorder.setPosition({125, 730});
     Text tPrevBtn(font, "PREV", 40);
     tPrevBtn.setFillColor(Color::White);
     tPrevBtn.setOrigin({75, 20});
     tPrevBtn.setPosition({163, 725});
 
-
-    // menu BUTTON
-    RectangleShape menuBtn;
+    // MENU button
+    RectangleShape menuBtn, menuBtnBorder;
     menuBtn.setSize(Vector2f(300,40));
     menuBtn.setFillColor(Color(253,114,114));
-    menuBtn.setOrigin({(menuBtn.getSize().x)/2 , (menuBtn.getSize().y)/2});
-    menuBtn.setPosition({412, 730}); // x,y
-
-    RectangleShape menuBtnBorder;
+    menuBtn.setOrigin({menuBtn.getSize().x/2 , menuBtn.getSize().y/2});
+    menuBtn.setPosition({412, 730});
     menuBtnBorder.setSize(Vector2f(320,55));
     menuBtnBorder.setFillColor(Color::Red);
-    menuBtnBorder.setOrigin({(menuBtnBorder.getSize().x)/2 , (menuBtnBorder.getSize().y)/2});
-    menuBtnBorder.setPosition({412, 730}); // x,y
-
+    menuBtnBorder.setOrigin({menuBtnBorder.getSize().x/2 , menuBtnBorder.getSize().y/2});
+    menuBtnBorder.setPosition({412, 730});
     Text tMenuBtn(font, "MENU", 40);
     tMenuBtn.setFillColor(Color::White);
     tMenuBtn.setOrigin({75, 20});
     tMenuBtn.setPosition({440, 725});
 
-
-    // NEXT BUTTON
-    RectangleShape nextBtn;
+    // NEXT button
+    RectangleShape nextBtn, nextBtnBorder;
     nextBtn.setSize(Vector2f(125,40));
     nextBtn.setFillColor(Color(130,130,130));
-    nextBtn.setOrigin({(nextBtn.getSize().x)/2 , (nextBtn.getSize().y)/2});
-    nextBtn.setPosition({702, 730}); // x,y
-
-    RectangleShape nextBtnBorder;
+    nextBtn.setOrigin({nextBtn.getSize().x/2 , nextBtn.getSize().y/2});
+    nextBtn.setPosition({702, 730});
     nextBtnBorder.setSize(Vector2f(145,55));
     nextBtnBorder.setFillColor(Color::Black);
-    nextBtnBorder.setOrigin({(nextBtnBorder.getSize().x)/2 , (nextBtnBorder.getSize().y)/2});
-    nextBtnBorder.setPosition({702, 730}); // x,y
-
+    nextBtnBorder.setOrigin({nextBtnBorder.getSize().x/2 , nextBtnBorder.getSize().y/2});
+    nextBtnBorder.setPosition({702, 730});
     Text tNextBtn(font, "NEXT", 40);
     tNextBtn.setFillColor(Color::White);
     tNextBtn.setOrigin({75, 20});
     tNextBtn.setPosition({740, 725});
 
+    // Pagination variables
     int actualPage = 1;
     int lastPage = (totalUsers + 9) / 10;
-    int actualUser = actualPage*10-9;
-    int lastUserPage = actualPage*10;
+    int actualUser = actualPage * 10 - 9;
+    int lastUserPage = actualPage * 10;
+
+    // Vectors for each column of the leaderboard
     vector<Text> ranks;
     vector<Text> usernames;
     vector<Text> scores;
     vector<Text> dates;
 
-    users = fopen("users.dat","rb");
-
-    if(users==NULL){
-        cout << "Error";
-        return;
-    }
-
-    int index=0;
-    // Loop through users to display on the current page (pagination)
+    // Loop through users to display on the first page 
     for (int i = actualUser - 1; i < lastUserPage && i < totalUsers; ++i) {
         ScoreRecord& data = allUsers[i]; // Access the i-th user in the vector
 
-        // Create rank text (1-based index)
+        // Create rank text 
         Text rank(font, to_string(i + 1), 32);
         rank.setOrigin({150, 40});
         // Position vertically based on current page and index
         rank.setPosition({230, 270.0f + (i - (actualUser - 1)) * 45.0f});
         // Highlight the first place with gold color
         if (i == 0) {
-            rank.setFillColor(Color(255, 215, 0)); // Gold color
+            rank.setFillColor(Color(255, 215, 0)); 
         }
         ranks.push_back(rank);
 
@@ -205,12 +191,11 @@ void screenLeaderboard() {
         }
         dates.push_back(date);
     }
-    fclose(users);
 
     // 0 = prev, 1 = menu, 2 = next
     int posAux = 1;
-    bool needsUpdate = false;
-    bool enterPressed = false;
+    bool needsUpdate = false; // Boolean flag that indicates if the leaderboard information needs to be updated
+    bool enterPressed = false; // Boolean flag that prevents doble enter
 
     // Main loop
     while (window.isOpen()) {
@@ -219,31 +204,35 @@ void screenLeaderboard() {
                 window.close();
             }   
             if(Keyboard::isKeyPressed(Keyboard::Key::Escape)){
-                window.close();
+                window.close(); // Close the window if Escape key is pressed
             }
 
+            // If Right arrow is pressed and there is more than one page
             if (Keyboard::isKeyPressed(Keyboard::Key::Right) && lastPage != 1){
                 if (actualPage == 1 && posAux==1){
-                    posAux++;
+                    posAux++; // Move selection to the next button if on first page and current button is 1
                     cout << posAux;
                 } else if (actualPage == lastPage && posAux==0){
-                    posAux++;
-                    cout << posAux;
+                    posAux++; // Move selection to the menu button if on last page and current button is 0 (prev)
+                    cout << posAux; 
                 } else if (posAux >= 0 && posAux < 2 && actualPage!=lastPage){
-                    posAux++;
+                    posAux++; // Move selection right for all other valid positions if not on the last page
                     cout << posAux;
                 }
             }
 
+            // If Left arrow is pressed and there is more than one page
             if (Keyboard::isKeyPressed(Keyboard::Key::Left) && lastPage != 1){
-                if (actualPage == 1 && posAux==2){
-                    posAux--;
+                if (actualPage == 1 && posAux == 2){
+                    posAux--; // Move selection to the previous button if on first page and current button is 2 (next)
                     cout << posAux;
-                } else if (actualPage == lastPage && posAux==1){
-                    posAux--;
+                } 
+                else if (actualPage == lastPage && posAux == 1){
+                    posAux--; // Move selection to the previous button if on last page and current button is 1 (menu)
                     cout << posAux;
-                } else if (posAux > 0 && posAux <= 2 && actualPage!=1){
-                    posAux--;
+                } 
+                else if (posAux > 0 && posAux <= 2 && actualPage != 1){
+                    posAux--; // Move selection left for all other valid positions if not on the first page
                     cout << posAux;
                 }
             }
@@ -260,6 +249,7 @@ void screenLeaderboard() {
                     nextBtn.setFillColor(Color(130,130,130));
                     nextBtnBorder.setFillColor(Color::Black);
 
+                    // If enter is pressed the page goes back and it needs update
                     if (const auto *key = event->getIf<Event::KeyPressed>()) {
                         if (key->scancode == Keyboard::Scancode::Enter){
                             if (!enterPressed && actualPage > 1) {
@@ -283,6 +273,7 @@ void screenLeaderboard() {
                     nextBtn.setFillColor(Color(130,130,130));
                     nextBtnBorder.setFillColor(Color::Black);
 
+                    // if enter is pressed the screen changes to the menu
                     if (const auto* key = event->getIf<Event::KeyPressed>()){
                         if (key->scancode == Keyboard::Scancode::Enter){
                             window.close();
@@ -301,6 +292,8 @@ void screenLeaderboard() {
                     prevBtnBorder.setFillColor(Color::Black);
                     menuBtn.setFillColor(Color(130,130,130));
                     menuBtnBorder.setFillColor(Color::Black);
+
+                    // if enter is pressed the pages goes forward and it needs update
                     if (const auto* key = event->getIf<Event::KeyPressed>()){
                         if (key->scancode == Keyboard::Scancode::Enter){
                             if (!enterPressed && actualPage < lastPage) {
@@ -313,10 +306,9 @@ void screenLeaderboard() {
                     break;
             }
 
-
-
         }   
 
+        // depending on the page, these calculate what is gonna be the first and last player in the leadb
         actualUser = actualPage*10-9;
         lastUserPage = actualPage*10;
 
@@ -387,6 +379,7 @@ void screenLeaderboard() {
         window.draw(user);
         window.draw(score);
         window.draw(date);
+
         for (const auto& rank : ranks) {
             window.draw(rank);
         }
@@ -400,6 +393,7 @@ void screenLeaderboard() {
             window.draw(date);
         }
 
+        // if is the first page the prev button doesnt appear
         if (actualPage != 1){
             window.draw(prevBtnBorder);
             window.draw(prevBtn);
@@ -410,6 +404,7 @@ void screenLeaderboard() {
         window.draw(menuBtn);
         window.draw(tMenuBtn); 
 
+        // if is the last page the next button doesnt appear
         if (actualPage != lastPage){  
             window.draw(nextBtnBorder);
             window.draw(nextBtn);

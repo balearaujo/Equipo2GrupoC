@@ -376,7 +376,7 @@ void saveGame(int *gameSequence, int gsequencePos, States game, int score, int s
     record.aa = time_now->tm_year + 1900;
 
     // Save to binary file users.dat
-    FILE* usersFile = fopen("leaderb.dat", "ab"); // append binary mode
+    FILE* usersFile = fopen("leaderb.dat", "ab"); 
     if (usersFile != NULL) {
         fwrite(&record, sizeof(ScoreRecord), 1, usersFile);
         fclose(usersFile);

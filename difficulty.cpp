@@ -7,6 +7,7 @@ using namespace sf;
 void screenSelectDifficulty(){
     RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred"); // creates the 825x800 window
 
+    //BACKGROUND
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
         cout << "Image couldnt be loaded" << endl;
@@ -78,7 +79,7 @@ void screenSelectDifficulty(){
 
     // 0 = easy, 1 = hard, 2 = home button
     int posAux = 0;
-    bool homeIconHover = false;
+    bool homeIconHover = false; // boolean used for a change of icon if the home button is selected
 
     // Main loop
     while (window.isOpen()) {
@@ -89,12 +90,14 @@ void screenSelectDifficulty(){
                 window.close();
             }
 
+            // if key down is pressed and its not the last button, move selection to the next button
             if (posAux>= 0 && posAux<2){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
                     posAux++;
                 }
             }
 
+            // if key up is pressed and its not the first button, move selection to the prev button
             if (posAux> 0 && posAux<=2){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Up)){
                     posAux--;
@@ -137,6 +140,7 @@ void screenSelectDifficulty(){
             
             if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Enter){
+                    // Action based on the currently selected button (posAux)
                     if (posAux==0){
                         window.close();
                         screenGame(4);
@@ -167,6 +171,7 @@ void screenSelectDifficulty(){
         window.draw(hardBtn);
         window.draw(tHardBtn);
 
+        // depending in if the home icon is selected the icon changes
         if (homeIconHover){
             window.draw(homeBSprite);
         } else {
