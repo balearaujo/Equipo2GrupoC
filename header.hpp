@@ -1,27 +1,14 @@
 #ifndef HEADER_HPP
 #define HEADER_HPP
 
-// signUp.cpp estructura
-// union GameStatus{
-//     bool inProgress;
-//     bool finished;
-// };
-
-// struct GameHistory{
-//     int gameNumber;
-//     char date[50];
-//     int score;
-//     int gameSequence[50];
-//     GameStatus status;
-// };
-
 struct User{
     int idUser;
     char username[16];
     char password[16];
     int nGames;
-    // GameHistory *games;
 };
+
+extern User currentUser; // struct with extern because its declared in main.cpp
 
 // signUp.cpp funciones
 void screenSignUp();
@@ -56,6 +43,8 @@ void screenMainMenu();
 
 
 // game.cpp
+enum States{showingSequence, userTurn, End}; // global enum 
 void screenGame(int);
+void saveGame(int *, int, States, int);
 
 #endif

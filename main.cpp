@@ -4,6 +4,8 @@
 using namespace std; 
 using namespace sf;
 
+User currentUser; //declare a global struct for one user
+
 int main() {
     screenMainMenu();
 

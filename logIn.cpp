@@ -245,6 +245,13 @@ bool isValidUser(sf::Text inpUsername, sf::Text inpPass){
             (strcmp(inpPass.getString().toAnsiString().c_str(), checkUser.password)==0))
             {
                 cout << "usuarios correctos" << endl;
+                
+                // set the user as a global variable so we can access it from all the files
+                currentUser.idUser = checkUser.idUser;
+                strcpy(currentUser.username, checkUser.password);
+                strcpy(currentUser.username, checkUser.password);
+                currentUser.nGames = checkUser.nGames;
+                
                 fclose(users);
                 return true;
         } 
