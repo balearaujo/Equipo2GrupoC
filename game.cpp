@@ -211,7 +211,7 @@ void screenGame(int size) {
             delete[] gameSequence;
             delete[] userInput;
             // call function to save the game information
-            saveGame(gameSequence, gsequencePos, game, countPoints);
+            saveGame(gameSequence, gsequencePos, game, countPoints, size);
             // increase by one the game number of the user
             currentUser.nGames++;
             window.close();
@@ -265,7 +265,7 @@ void screenGame(int size) {
     }
 }
 
-void saveGame(int *gameSequence, int gsequencePos, States game, int score){
+void saveGame(int *gameSequence, int gsequencePos, States game, int score, int size){
     time_t now = time(NULL); // get the current time from the computer, time() grabs days, months, years, hours, minutes, seconds
     struct tm* time_now = localtime(&now);  // convert time from "now" into a struct
     char date[11]; // char array to store the formatted date
@@ -291,7 +291,7 @@ void saveGame(int *gameSequence, int gsequencePos, States game, int score){
 
     ostringstream newGameStream; // string to concat all the information of the game 
     // [idGame, date, score, status, sequence]
-    newGameStream << "[" << currentUser.nGames << "," << date << "," << score << "," << static_cast<int>(game) << "," << sequence.str() << "]";
+    newGameStream << "[" << currentUser.nGames << "," << date << "," << size << "," << score << "," << static_cast<int>(game) << "," << sequence.str() << "]";
 
     ifstream games("games.txt"); // ifstream is used to open a file in reading mode
     ofstream gamesTemp("gamesTemp.txt"); // ofstream is used to open a file in writing mode

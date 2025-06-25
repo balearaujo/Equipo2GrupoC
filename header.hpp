@@ -45,6 +45,6 @@ void screenMainMenu();
 // game.cpp
 enum States{showingSequence, userTurn, End}; // global enum 
 void screenGame(int);
-void saveGame(int *, int, States, int);
+void saveGame(int *, int, States, int, int);
 
 #endif
