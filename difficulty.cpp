@@ -8,6 +8,9 @@
 using namespace std;
 using namespace sf;
 
+/*Displays a window for the player to choose the game difficulty (EASY or HARD)
+or return to the main menu. Allows navigation with arrow keys and selection
+with Enter. Updates button highlights based on selection*/
 void screenSelectDifficulty(){
     RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred!"); // creates the 825x800 window
 

@@ -8,6 +8,10 @@
 using namespace std;
 using namespace sf;
 
+/* Displays the main menu window with options: New Game, Leaderboard, Load Game,
+ Help, and Log Out. Allows navigation through buttons using arrow keys and
+ selection with Enter. Highlights the selected option and triggers the
+ corresponding screen when selected*/
 void screenMenu(){
     RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred!"); // creates the 825x800 window
 
@@ -31,7 +35,7 @@ void screenMenu(){
     // Apply the calculated scale to the sprite
     backgSprite.setScale({scaleX, scaleY});
 
-    
+
     // TITLE
     Font font("assets/BurbankBigCondensed-Black.otf"); // load the font
     Text title(font, "MENU", 90); // declare the text, its font, content and size

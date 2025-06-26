@@ -9,6 +9,9 @@
 using namespace std;
 using namespace sf;
 
+/* Displays a paginated leaderboard window showing players' ranks, names, scores,
+and dates. Reads data from a binary file, sorts it by score, and allows
+navigation through pages with Prev, Next, and Menu buttons using keyboard input*/
 void screenLeaderboard() {
     ScoreRecord data;
     vector<ScoreRecord> allUsers;
