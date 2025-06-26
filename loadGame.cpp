@@ -127,6 +127,15 @@ void screenLoadGame(){
     bgMenuBorder.setOrigin({bgMenuBorder.getSize().x/2, bgMenuBorder.getSize().y/2});
     bgMenuBorder.setPosition({825/2, 800/2});
 
+    // home black icon
+    Texture homeBTexture;
+    if (!homeBTexture.loadFromFile("assets/home-icon-black.png")) {
+        cout << "Image couldnt be loaded" << endl;
+    }
+    Sprite homeBSprite(homeBTexture); 
+    homeBSprite.setPosition({675,675});
+    bool homeIconHover = false; // boolean used for a change of icon if the home button is selected
+
     int posAux{0};
         // Main loop
     while (window.isOpen()) {
@@ -146,16 +155,21 @@ void screenLoadGame(){
             if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Enter){
                     cout << posAux;
-                    switch(posAux){ 
-                        case 0:
-                            window.close();
-                            screenGame(points, size, sequence, sequenceSize, true);
-                            break;
-            
-                        case 1:
-                            window.close();
-                            screenMenu();
-                            break;
+                    if (canLoad){
+                        switch(posAux){ 
+                            case 0:
+                                window.close();
+                                screenGame(points, size, sequence, sequenceSize, true);
+                                break;
+                
+                            case 1:
+                                window.close();
+                                screenMenu();
+                                break;
+                        }
+                    } else {
+                        window.close();
+                        screenMenu();
                     }
                 }
             }
@@ -169,6 +183,7 @@ void screenLoadGame(){
         window.draw(title);
 
         if (canLoad){
+            homeIconHover = false;
             // if key down is pressed and its not the last button, move selection to the next button
             if (posAux>= 0 && posAux<1){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Right)){
@@ -198,6 +213,7 @@ void screenLoadGame(){
                     btnYesBorder.setFillColor(Color::Transparent);
                     break;
             }
+            
 
             window.draw(btnYesBorder);
             window.draw(btnYes);
@@ -212,8 +228,8 @@ void screenLoadGame(){
             window.draw(recInfoStatus);
         } else{
             window.draw(tCantLoad);
+            window.draw(homeBSprite);
         }
-        
 
         // show what was drawn
         window.display();

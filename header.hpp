@@ -63,4 +63,7 @@ enum States{showingSequence, userTurn, End, gamePaused}; // global enum
 void screenGame(int, int, int *, int, bool);
 void saveGame(int *, int, States, int, int);
 
+// gameover.cpp
+void screenGameOver(int, int);
+
 #endif

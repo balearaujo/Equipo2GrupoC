@@ -82,7 +82,7 @@ void screenMainMenu(){
             scale += scaleSpeed * timeElapsed; 
             if (scale >= 1.1f) animate = false;
         } else{
-            scale -= scaleSpeed * timeElapsed;
+            scale -= scaleSpeed * timeElapsed;  
             if (scale <= 1.0f) animate = true;
         }
         tTitle.setScale({scale, scale});

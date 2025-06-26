@@ -293,8 +293,9 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
                 saveGame(gameSequence, gsequencePos, game, countPoints, size);
                 // increase by one the game number of the user
                 currentUser.nGames++;
+                
                 window.close();
-                screenMenu();
+                screenGameOver(countPoints,size);
             }
             //Draw Matrix
             for(int i=0; i<rows; i++){

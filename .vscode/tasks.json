@@ -17,6 +17,7 @@
 				"difficulty.cpp", 
 				"help.cpp",
 				"loadGame.cpp",
+				"gameOver.cpp",
 				"-I${workspaceFolder}/include",
 				"-DSFML_STATIC",
 				"-o",
