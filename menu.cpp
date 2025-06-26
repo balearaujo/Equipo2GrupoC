@@ -13,19 +13,21 @@ void screenMenu(){
     
 
     // BACKGROUND 
-    // texture store the image data 
+    // load background texture
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
         cout << "Image couldnt be loaded" << endl;
         return;
     }
-
-    // sprite is a image that gets drawn in the screen
-    Sprite backgSprite(backgTexture); 
+     // Create a sprite from the loaded texture
+    Sprite backgSprite(backgTexture);
+    // Calculate scale factors to make the background fit the entire window
     float scaleX = float(window.getSize().x) / backgTexture.getSize().x;
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
+    // Apply the calculated scale to the sprite
     backgSprite.setScale({scaleX, scaleY});
 
+    
     // TITLE
     Font font("assets/BurbankBigCondensed-Black.otf"); // load the font
     Text title(font, "MENU", 90); // declare the text, its font, content and size

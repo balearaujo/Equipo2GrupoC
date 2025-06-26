@@ -12,31 +12,39 @@ void screenSelectDifficulty(){
     window.setIcon(icon);
     
 
-    //BACKGROUND
+    // BACKGROUND 
+    // load background texture
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
         cout << "Image couldnt be loaded" << endl;
         return;
     }
-
-    Sprite backgSprite(backgTexture); 
+     // Create a sprite from the loaded texture
+    Sprite backgSprite(backgTexture);
+    // Calculate scale factors to make the background fit the entire window
     float scaleX = float(window.getSize().x) / backgTexture.getSize().x;
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
+    // Apply the calculated scale to the sprite
     backgSprite.setScale({scaleX, scaleY});
 
+
     // home white icon
+    // load texture
     Texture homeWTexture;
     if (!homeWTexture.loadFromFile("assets/home-icon-white.png")) {
         cout << "Image couldnt be loaded" << endl;
     }
+    // Create a sprite from the loaded texture
     Sprite homeWSprite(homeWTexture); 
     homeWSprite.setPosition({740,725});
 
     // home black icon
+    // load texture
     Texture homeBTexture;
     if (!homeBTexture.loadFromFile("assets/home-icon-black.png")) {
         cout << "Image couldnt be loaded" << endl;
     }
+    // Create a sprite from the loaded texture
     Sprite homeBSprite(homeBTexture); 
     homeBSprite.setPosition({740,725});
 

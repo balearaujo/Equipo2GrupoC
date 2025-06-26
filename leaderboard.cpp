@@ -34,17 +34,21 @@ void screenLeaderboard() {
     Image icon("assets/logo.png");
     window.setIcon(icon);
     
-    
+    //BACKGROUND
     // Load background texture
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
         cout << "Image couldnt be loaded" << endl;
         return;
     }
-    Sprite backgSprite(backgTexture); 
+    // Create a sprite from the loaded texture
+    Sprite backgSprite(backgTexture);
+    // Calculate scale factors to make the background fit the entire window
     float scaleX = float(window.getSize().x) / backgTexture.getSize().x;
     float scaleY = float(window.getSize().y) / backgTexture.getSize().y;
+    // Apply the calculated scale to the sprite
     backgSprite.setScale({scaleX, scaleY});
+    
 
     // Load font and set title
     Font font("assets/BurbankBigCondensed-Black.otf");
@@ -380,6 +384,8 @@ void screenLeaderboard() {
         window.draw(title);
         window.draw(margin);
         window.draw(headerRow);
+
+        // for loops that iterate through the row vector and draw them
         for (const auto& row : rows) {
             window.draw(row);
         }
@@ -388,6 +394,7 @@ void screenLeaderboard() {
         window.draw(score);
         window.draw(date);
 
+        // for loops that iterate through the text vectors and draw them
         for (const auto& rank : ranks) {
             window.draw(rank);
         }

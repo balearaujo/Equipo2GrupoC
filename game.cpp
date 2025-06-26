@@ -59,14 +59,13 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
 
 
     // home black icon
-    Texture homeBTexture;
-    if (!homeBTexture.loadFromFile("assets/home-icon-black.png")) {
+    Texture homeWTexture;
+    if (!homeWTexture.loadFromFile("assets/home-icon-white2.png")) {
         cout << "Image couldnt be loaded" << endl;
     }
-    Sprite homeBSprite(homeBTexture); 
-    Vector2u homeOGSize = homeBTexture.getSize();
-    homeBSprite.setScale({(300.f / homeOGSize.x) , (300.f / homeOGSize.y)});
-    homeBSprite.setPosition({265, 315});
+    Sprite homeWSprite(homeWTexture); 
+    homeWSprite.setScale({0.7f, 0.7f});
+    homeWSprite.setPosition({275, 315});
 
 
     // pause menu
@@ -360,7 +359,7 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
             window.draw(bgPauseBorder);
             window.draw(bgPause);
             window.draw(tPause);
-            window.draw(homeBSprite);
+            window.draw(homeWSprite);
         }
         window.display();
     }
