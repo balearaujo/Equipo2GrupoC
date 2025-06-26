@@ -89,6 +89,7 @@ void screenGameOver(int score, int size){
     bgMenuBorder.setOrigin({bgMenuBorder.getSize().x/2, bgMenuBorder.getSize().y/2});
     bgMenuBorder.setPosition({825/2, 800/2});
     int posAux{0};
+    bool enterPressed = false; //flag to avoid multiple enter inputs
         // Main loop
     while (window.isOpen()) {
         while (const optional event = window.pollEvent()){ // check and handle window events
@@ -103,7 +104,8 @@ void screenGameOver(int score, int size){
             }
 
             if (const auto* key = event->getIf<Event::KeyPressed>()){
-                if (key->scancode == Keyboard::Scancode::Enter){
+                if (key->scancode == Keyboard::Scancode::Enter && !enterPressed){
+                    enterPressed = true;
                     sleep(milliseconds(150)); 
                     switch(posAux){ 
                         case 0:
@@ -119,6 +121,11 @@ void screenGameOver(int score, int size){
                 }
             }
 
+        }
+        
+        // reset the enter flag when unholding the key
+        if (!Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
+            enterPressed = false;
         }
         
         // if key down is pressed and its not the last button, move selection to the next button
@@ -169,4 +176,3 @@ void screenGameOver(int score, int size){
         window.display();
     }
 }
-

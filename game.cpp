@@ -107,7 +107,8 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
     float onTime=0.6f, offTime=0.3f, moveDelay=0.2f, timePassed;
     int show=0; //the position of the sequence showing
     bool showlighterCol=false; //ask if its time to light the rectangle
-    bool entered;
+    bool entered = false;
+    bool enterPressed = false; // flag to avoid multiple enter inputs
 
     //Array of colors
     Color lighterCol[] = {
@@ -144,6 +145,7 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
 
     int r, c;
     bool escape = false;
+    bool escapePressed = false; // flag to avoid multiple escape inputs
 
     while(window.isOpen())
     {
@@ -191,7 +193,7 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
                 }
             }
             else if(game==userTurn){
-                if(moveClock.getElapsedTime().asSeconds()>moveDelay) //HERE
+                if(moveClock.getElapsedTime().asSeconds()>moveDelay)
                 {
                     //Move rows or columns based on pressed key and validate if movement is posible by checking Matrix boundaries.
                         if (Keyboard::isKeyPressed(Keyboard::Key::Up) && row>0){ 
@@ -214,7 +216,8 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
                         }
                     } 
                 }
-                if(Keyboard::isKeyPressed(Keyboard::Key::Enter)){ //ask if enter is being pressed
+                if(Keyboard::isKeyPressed(Keyboard::Key::Enter) && !enterPressed){ //ask if enter is being pressed
+                    enterPressed = true;
                     if(entered==false){
                         entered=true;
 
@@ -265,8 +268,9 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
                     sleep(milliseconds(150));
                     }
         
-                } else {
+                } else if (!Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
                     entered=false;
+                    enterPressed = false;
                 }
             }
             
@@ -293,6 +297,11 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
                 saveGame(gameSequence, gsequencePos, game, countPoints, size);
                 // increase by one the game number of the user
                 currentUser.nGames++;
+                
+                // clear events buffer
+                while (const std::optional event = window.pollEvent()) {
+
+                }
                 
                 window.close();
                 screenGameOver(countPoints,size);
@@ -339,11 +348,14 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
             window.draw(tPoints);
             window.draw(tTurn);
         } else {
-            if (Keyboard::isKeyPressed(Keyboard::Key::Enter)){
+            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && !enterPressed){
+                enterPressed = true;
                 game = gamePaused;
                 saveGame(gameSequence, gsequencePos, game, countPoints, size);
                 window.close();
                 screenMenu();
+            } else if (!Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
+                enterPressed = false;
             }
             window.draw(bgPauseBorder);
             window.draw(bgPause);
