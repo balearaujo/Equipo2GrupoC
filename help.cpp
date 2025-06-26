@@ -15,7 +15,7 @@ void helpScreen(){
     Image icon("assets/logo.png");
     window.setIcon(icon);
     
-    
+    // load background
     Texture backgTexture;
     if (!backgTexture.loadFromFile("assets/backg.png")) {
         cout << "Image couldnt be loaded" << endl;
@@ -52,19 +52,21 @@ void helpScreen(){
 
     float x, y;
 
+    // rectangleShape used for the "menu" background
     RectangleShape rectangle;
     rectangle.setSize({712, 700});
     rectangle.setOrigin({rectangle.getSize().x/2 , rectangle.getSize().y/2});
     rectangle.setPosition({825/2, 800/2});
     rectangle.setFillColor(Color(0, 0, 0));
 
+    // rectangleShape border, also used for the "menu"
     RectangleShape rectangleBorder;
     rectangleBorder.setSize({722, 710});
     rectangleBorder.setOrigin({rectangleBorder.getSize().x/2 , rectangleBorder.getSize().y/2});
     rectangleBorder.setPosition({825/2, 800/2});
     rectangleBorder.setFillColor(Color::White);
 
-
+    // show instructions on the screen about how to play the game
     Text instructions(font);
     instructions.setCharacterSize(35);
     instructions.setFillColor(Color::White);
@@ -88,10 +90,10 @@ void helpScreen(){
         while(const std::optional event = window.pollEvent())
         {
             if(event->is<Event::Closed>()){
-                window.close();
+                window.close(); // if window is going to be closed
             }
             if (Keyboard::isKeyPressed(Keyboard::Key::Escape)){
-                window.close();
+                window.close(); // if the user presses escape, go back to the main menu
                 screenMenu();
             }
 
@@ -118,7 +120,8 @@ void helpScreen(){
                 }
             }
         }
-    
+        
+        // show all on screen
         window.clear();
         window.draw(backgSprite);
         window.draw(rectangleBorder);
