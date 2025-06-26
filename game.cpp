@@ -233,7 +233,7 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
 
                             for(int i=0; i<rows; i++){
                                 for(int j=0; j<columns; j++){
-                                    RectangleShape rectangle;
+                                    RectangleShape rectangle; //draw matrix
                                     (size == 9 ? rectangle.setSize({140.f,140.f}) : rectangle.setSize({200.f,200.f}));
                                     (size == 9 ? rectangle.setPosition({j*185.f+233.f, i*185.f+220.f}) : rectangle.setPosition({j*250.f+285.f, i*250.f+270.f}));
                                     rectangle.setOrigin({rectangle.getSize().x/2, rectangle.getSize().y/2});
@@ -353,16 +353,17 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
             }
             window.draw(tPoints);
             window.draw(tTurn);
-        } else {
-            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && !enterPressed){
-                enterPressed = true;
-                game = gamePaused;
-                saveGame(gameSequence, gsequencePos, game, countPoints, size);
+        } else { //escape is pressed
+            if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && !enterPressed){ 
+                enterPressed = true; 
+                game = gamePaused;//change gameState
+                saveGame(gameSequence, gsequencePos, game, countPoints, size); //saves game in a file
                 window.close();
                 screenMenu();
             } else if (!Keyboard::isKeyPressed(Keyboard::Key::Enter)) {
                 enterPressed = false;
             }
+            //draw pause window
             window.draw(bgPauseBorder);
             window.draw(bgPause);
             window.draw(tPause);
