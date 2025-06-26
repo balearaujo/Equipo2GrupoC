@@ -1,3 +1,7 @@
+// Erick Fernando Perez Cruz ID: 549923
+// Valeria Alejandra Araujo Martinez ID: 340195
+// Angel Ricardo Gonzalez Soto ID: 551990
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <fstream>
@@ -20,7 +24,7 @@ void screenLoadGame(){
         return;
     }
     
-    // get data to load game
+    // get data to load game as size of the board, user points, the sequence of the game, the size of the numbers of the sequence
     bool canLoad{false};
     cout << "\nGame\n";
     std::string lastGame = ""; 
@@ -28,7 +32,7 @@ void screenLoadGame(){
     int points{0};
     int sequenceSize{0};
     int *sequence = new int[50];
-    canLoad = checkGame(lastGame, size, points, sequence, sequenceSize);
+    canLoad = checkGame(lastGame, size, points, sequence, sequenceSize); // calls the function to check if the user has a game to load
     cout << lastGame;
     cout << "\nSize " << size << "  points " << points;
 
@@ -139,12 +143,12 @@ void screenLoadGame(){
     int posAux{0};
         // Main loop
     while (window.isOpen()) {
-        
+        // events loop
         while (const optional event = window.pollEvent()){ // check and handle window events
             if (event->is<sf::Event::Closed>()) // check if the event was closing the window
                 window.close();
 
-            // if scape is pressed the screen returns to the main menu
+            // if escape is pressed the screen returns to the main menu
             if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Escape){ 
                     window.close();
@@ -152,46 +156,45 @@ void screenLoadGame(){
                 }
             }
 
+            // if enter key is pressed
             if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Enter){
                     cout << posAux;
-                    if (canLoad){
+                    if (canLoad){ // if the user has a game to load 
                         switch(posAux){ 
-                            case 0:
+                            case 0: // case 0, yes button, load game with the variables obtained calling screenGame() function
                                 window.close();
                                 screenGame(points, size, sequence, sequenceSize, true);
                                 break;
                 
-                            case 1:
+                            case 1: // case 1, no button, close window and go back to the menu
                                 window.close();
                                 screenMenu();
                                 break;
                         }
-                    } else {
-                        window.close();
+                    } else { // if the user can't load any games and presses enter, window closes and goes back to the menu
+                        window.close(); 
                         screenMenu();
                     }
                 }
             }
 
         }
-        
-        window.clear(Color::Black); // clear the window to draw the next frame
+        // draw the basic classes
+        window.clear(Color::Black);
         window.draw(backgSprite);
         window.draw(bgMenuBorder);
         window.draw(bgMenu);
         window.draw(title);
 
-        if (canLoad){
+        if (canLoad){ // if the user can load a game
             homeIconHover = false;
-            // if key down is pressed and its not the last button, move selection to the next button
+            // set a range to handle the buttons
             if (posAux>= 0 && posAux<1){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Right)){
                     posAux++;
                 }
-            }
-    
-            // if key up is pressed and its not the first button, move selection to the prev button
+            }    
             if (posAux> 0 && posAux<=1){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Left)){
                     posAux--;
@@ -214,7 +217,7 @@ void screenLoadGame(){
                     break;
             }
             
-
+            // draw the classes needed when the user can load
             window.draw(btnYesBorder);
             window.draw(btnYes);
             window.draw(tYes);
@@ -227,6 +230,7 @@ void screenLoadGame(){
             window.draw(recInfoSize);
             window.draw(recInfoStatus);
         } else{
+            // classes needed when he can't load 
             window.draw(tCantLoad);
             window.draw(homeBSprite);
         }
@@ -236,6 +240,10 @@ void screenLoadGame(){
     }
 }
 
+// function checkGame uses only strings and files, they are opened with ifstream and ofstream for more convenient operation, the main point of this function is getting all the data needed
+// to start a paused game, like the size of the board, the points of the user, the sequence of the game, with this information we can start a game from the last paused position, it functions
+// first substracting the last game of the user, then it extracts information separated by commas, from the 4th to 5th comma is the game state, 3rd to 4th is the score, 2nd to 3rd is the board 
+// size, and everything after the last comma is the array of illuminated positions during gameplay.
 bool checkGame(std::string& lastGame, int& size, int& points, int *sequence, int& sequenceSize){
     ifstream games("games.txt"); // open games.txt in reading mode
     std::string line; // line of text
@@ -245,34 +253,34 @@ bool checkGame(std::string& lastGame, int& size, int& points, int *sequence, int
     std::string getArray;
     int pos{0};
     while (getline(games, line)){ // read the file line by ine
-        if (line.substr(0, line.find("/")) == to_string(currentUser.idUser)){ // check if the user has games
-            int opening = line.find_last_of("[");
-            int closing = line.find_last_of("]");
-            lastGame = line.substr(opening, closing-opening+1);
-            getState = lastGame;
-            getPoints = lastGame;
-            getSize = lastGame;
+        if (line.substr(0, line.find("/")) == to_string(currentUser.idUser)){ // check the user id, the format writed for every user in the file is ID/[idGame,date,size,points,state,(pos)]
+            int opening = line.find_last_of("[");                           // so the line gets substracted until it finds a "/", and then is compared to the current global user id
+            int closing = line.find_last_of("]"); // finds the position of the last [ ]
+            lastGame = line.substr(opening, closing-opening+1); // sets the string from the opening to the closing bracket
+            getState = lastGame; // asigns the same string
+            getPoints = lastGame; // asigns the same string
+            getSize = lastGame; // asigns the same string
             int aux{0};
-            while (aux!=4){
-                getState = getState.substr(getState.find_first_of(",")+1, getState.npos);
-                if (aux<3){
+            while (aux!=4){ // aux 4 because we are looking for the 4th comma 
+                getState = getState.substr(getState.find_first_of(",")+1, getState.npos); // we substract a smaller string every iteration
+                if (aux<3){ // looking for the 3rd comma
                     getPoints = getPoints.substr(getPoints.find_first_of(",")+1, getPoints.npos);                    
                 }
-                if (aux<2){
+                if (aux<2){ // 2nd comma
                     getSize = getSize.substr(getSize.find_first_of(",")+1, getSize.npos);
                 }
                 aux++;
             }
             int startBr = lastGame.find_first_of("(");
             int endBr = lastGame.find_first_of(")")-1;
-            getArray = lastGame.substr(startBr+1, endBr-startBr);
+            getArray = lastGame.substr(startBr+1, endBr-startBr); // the same process for the array, it looks for the pair of ( ) and substracts between them
             // cout << "Array: " << getArray << endl;
             int posAux{0};
-            if (!getArray.empty()){
-                for (char c : getArray){
-                    if (c == ',') continue;
+            if (!getArray.empty()){ // if the array is not empty
+                for (char c : getArray){ // iterate in all characters of the array
+                    if (c == ',') continue; // if its a comma, continue
                     else {
-                        sequence[posAux] = c - '0';
+                        sequence[posAux] = c - '0'; // if not, get the ascii of the number and put it on a vector
                         posAux++;
                     }
                 }   
@@ -284,14 +292,14 @@ bool checkGame(std::string& lastGame, int& size, int& points, int *sequence, int
             // }
             // cout << endl;
             getState = getState.substr(0, 1);
-            getSize = getSize.substr(0, 1);
+            getSize = getSize.substr(0, 1); // at the end of the substractions, we only get the information that we need without symbols 
             getPoints = getPoints.substr(0, getPoints.find_first_of(","));
-            size = stoi(getSize);
-            points = stoi(getPoints);
-            if (stoi(getState) == 3){
-                return true;
+            size = stoi(getSize); // convert string to int
+            points = stoi(getPoints); // string to int 
+            if (stoi(getState) == 3){ // if the state is 3 (state 3 means gamePaused)
+                return true; // return true, this means that the user has a game to load
             }
         }
     }
-    return false;
+    return false; // return false if the user doesn't have a game to load
 }

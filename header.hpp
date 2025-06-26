@@ -1,3 +1,7 @@
+// Erick Fernando Perez Cruz ID: 549923
+// Valeria Alejandra Araujo Martinez ID: 340195
+// Angel Ricardo Gonzalez Soto ID: 551990
+
 #ifndef HEADER_HPP
 #define HEADER_HPP
 

@@ -1,3 +1,7 @@
+// Erick Fernando Perez Cruz ID: 549923
+// Valeria Alejandra Araujo Martinez ID: 340195
+// Angel Ricardo Gonzalez Soto ID: 551990
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string.h>
@@ -53,7 +57,7 @@ void screenSignUp(){
     Text tWarningPass(font, "", 30);
     Text tButtonSU(font, "SIGN UP", 50);
     
-    sf::String concatUser("");
+    sf::String concatUser(""); // strings used for concatenate keyboard inputs
     sf::String concatPass("");
     sf::String concatConfPass("");
     Text inpUsername(font, "", 50);
@@ -63,7 +67,7 @@ void screenSignUp(){
     RectangleShape buttSub(Vector2f{350, 75});
     RectangleShape buttSubBorder(Vector2f{370, 90});
 
-    // color
+    // colors
     tTitle.setFillColor(Color::White);
     tUsername.setFillColor(Color::White);
     tPass.setFillColor(Color::White);
@@ -79,7 +83,7 @@ void screenSignUp(){
     buttSubBorder.setFillColor(Color::Transparent);
     
 
-    // origin
+    // origins
     tTitle.setOrigin({100, 40});
     tUsername.setOrigin({65, 17});
     tPass.setOrigin({65, 17});
@@ -95,7 +99,7 @@ void screenSignUp(){
     buttSubBorder.setOrigin({(buttSubBorder.getSize().x)/2 , (buttSubBorder.getSize().y)/2});
     
 
-    // position
+    // positions
     tTitle.setPosition({380, 110});
     tUsername.setPosition({190, 205}); 
     tPass.setPosition({190, 340});
@@ -110,7 +114,7 @@ void screenSignUp(){
     buttSub.setPosition({825/2, 650});
     buttSubBorder.setPosition({825/2, 650});
 
-    // design 
+    // create multiple rectangles with equal properties using a vector of rectangles
     vector<RectangleShape> inpBoxes; // boxes
     for (int i = 0; i<3; i++){
         RectangleShape inpBox;
@@ -120,6 +124,8 @@ void screenSignUp(){
         inpBox.setPosition({825/2, 265.f + i * 135.f});
         inpBoxes.push_back(inpBox);
     }
+
+    // create multiple rectangles with equal properties using a vector of rectangles
     vector<RectangleShape> inpBoxesBorder; // border
     for (int i = 0; i<3; i++){
         RectangleShape inpBoxBor;
@@ -133,13 +139,13 @@ void screenSignUp(){
 
     // MAIN WINDOW
     while (window.isOpen()){
+        // events loop
         while (const std::optional event = window.pollEvent()){
-            
             if (event->is<sf::Event::Closed>()){
-                window.close();
+                window.close(); // close window
             } else if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Escape){
-                    window.close();
+                    window.close(); // escape pressed, go back to the lst screen
                     screenMainMenu();
                 }
             }
@@ -197,25 +203,25 @@ void screenSignUp(){
                     buttSubBorder.setFillColor(Color::Red);
 
                     if (const auto* key = event->getIf<Event::KeyPressed>()){
-                        if (key->scancode == Keyboard::Scancode::Enter){
-                            if (checkUsername(inpUsername)){ // check if the username is available
+                        if (key->scancode == Keyboard::Scancode::Enter){ // if enter is pressed
+                            if (checkUsername(inpUsername)){ // check if the username is available calling checkUsername()
                                 if (checkPassword(inpPass, inpConfPass)){ // convert sf strings to std string and compare
-                                    tWarningPass.setString("PASSWORDS MUST MATCH!"); 
+                                    tWarningPass.setString("PASSWORDS MUST MATCH!");  // warning if they are diferent
                                     tWarningPass.setFillColor(Color::Yellow);
                                 } else{
-                                    if (inpPass.getString().getSize()<8 || inpUsername.getString().getSize()<8){
+                                    if (inpPass.getString().getSize()<8 || inpUsername.getString().getSize()<8){ // check if the input is larger than 8 characters
                                         tWarningPass.setString("USERNAME / PASSWORD MUST BE AT LEAST 8 CHARACTERS");
                                         tWarningPass.setFillColor(Color::Yellow);
-                                    } else{ // user available, same password, correct lenght
-                                        tWarningPass.setFillColor(Color::Transparent);
-                                        writeUser(inpUsername, inpPass);
-                                        cout << "User " << inpUsername.getString().toAnsiString() << " writed ";
-                                        window.close();
-                                        screenMainMenu();
+                                    } else{ 
+                                        tWarningPass.setFillColor(Color::Transparent); // if the user is available and both of the passwords are the same
+                                        writeUser(inpUsername, inpPass); // write user into a binary file
+                                        cout << "User " << inpUsername.getString().toAnsiString() << " writed "; // debug
+                                        window.close(); // close window
+                                        screenMainMenu(); // go to the next window
                                     }
                                 }   
                             } else{ // username not available
-                                tWarningPass.setString("USERNAME NOT AVAILABLE!");
+                                tWarningPass.setString("USERNAME NOT AVAILABLE!"); // warning
                                 tWarningPass.setFillColor(Color::Yellow);
                             }
                         }
@@ -229,7 +235,7 @@ void screenSignUp(){
                     tUsername.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     if (const auto* key = event->getIf<Event::KeyPressed>()){
-                        if (key->scancode == Keyboard::Scancode::Enter){
+                        if (key->scancode == Keyboard::Scancode::Enter){ // house icon that works as a go back button
                             window.close();
                             screenMainMenu();
                         }
@@ -238,14 +244,15 @@ void screenSignUp(){
                     break;
             }
     
-            if (!(inpUsername.getString().isEmpty()) && !(inpPass.getString().isEmpty()) && !(inpConfPass.getString().isEmpty())){
-                buttSub.setFillColor(Color(253,114,114)); // light red
+            if (!(inpUsername.getString().isEmpty()) && !(inpPass.getString().isEmpty()) && !(inpConfPass.getString().isEmpty())){ 
+                buttSub.setFillColor(Color(253,114,114)); // if all the inputs have information, switch the button to color red
             } else {
-                buttSub.setFillColor(Color(130,130,130)); // gray
+                buttSub.setFillColor(Color(130,130,130)); // if not, gray
             }
 
         }
         
+        // show everything on screen
         window.clear(Color::Black);
         window.draw(backgSprite);
         window.draw(tTitle);
@@ -277,80 +284,85 @@ void screenSignUp(){
     }
 }
 
-// al estar fuera de la window, se le tiene que pasar el evento, el evento se declara al crear la window. (event = window.pollEvent())
+// setInputValues function receives the original variable to input, the event queue, a string used for concatenation and a text to show warnings
 void setInputValues(sf::Text &variable, const sf::Event &event, sf::String &concatAux, sf::Text &tWarnings){
-    // getIf devuelve puntero a constante, es un puntero porque no se puede modificar el contenido que recibe del evento
-    // TextEntered, es decir, getIf devuelve el contenido de modo "lectura" a typedText y se concatena en concatAux, después se
-    // va asignando el texto concatenado a la variable ingresada.
+    // getIf returns a pointer to a constant because the content from the TextEntered event is read-only
+    // That is, getIf passes the text in "read" mode to typedText and it gets concatenated into concatAux
+    // Then, the concatenated string is assigned to the input variable
     if (const sf::Event::TextEntered *typedText = event.getIf<Event::TextEntered>()){
-        if (typedText->unicode < 128){
-            if (typedText->unicode == 32 || typedText->unicode > 127 || (typedText->unicode < 32 && typedText->unicode != 8)){
-                cout << "special character ";
-                tWarnings.setFillColor(Color::Yellow);    
+        if (typedText->unicode < 128){ // checks if the typed text is lower than 128 in unicode, that means, special characters, letters, symbols and numbers
+            if (typedText->unicode == 32 || typedText->unicode > 127 || (typedText->unicode < 32 && typedText->unicode != 8)){ 
+                cout << "special character "; // check if its a special character, the cout is just for debugging
+                tWarnings.setFillColor(Color::Yellow);  // show the warning on screen 
             } else{
-                if (variable.getString().getSize()<16){
-                    if (typedText->unicode!=8){
-                        concatAux += typedText->unicode;
+                if (variable.getString().getSize()<16){ // if the variable is smaller than 16 characters
+                    if (typedText->unicode!=8){ // if the typed character isn't backspace (8 = backspace)
+                        concatAux += typedText->unicode; // concatenate the input character into the concat variable
                     }
                 }
-                // verificar si es tecla borrar y que tenga uno o mas caracteres
-                if (concatAux.getSize()>0 && Keyboard::isKeyPressed(Keyboard::Key::Backspace)){
-                    // elimina en la posicion n-1
+                // verify if the key pressed is backspace and check if the string has one or more characters
+                if (concatAux.getSize()>0 && Keyboard::isKeyPressed(Keyboard::Key::Backspace)){ 
+                    // deletes the position n-1
                     concatAux.erase(concatAux.getSize()-1, 1);
                 }
-                variable.setString(concatAux);
-                cout << variable.getString().toAnsiString();
-                tWarnings.setFillColor(Color::Transparent);    
+                variable.setString(concatAux); // concatenate the original variable with the input character
+                cout << variable.getString().toAnsiString(); // debug
+                tWarnings.setFillColor(Color::Transparent);  // if nothing is wrong, set the warnings color transparent
             }
         }
     }
 }
 
-bool checkUsername(sf::Text inpUsername){
+// the function checkUsername receives the input username then it opens a file and compares each line to check whether the username already exists
+bool checkUsername(sf::Text inpUsername){ 
     FILE *users = fopen("users.dat", "ab+"); // open file
     User userRecord;
     if (users == NULL){ 
         cout << "Error while opening users.dat";
         return false;
     }
-    while (fread(&userRecord, sizeof(User), 1, users)){ // search username
+    while (fread(&userRecord, sizeof(User), 1, users)){ // search username in the file
         if (strcmp(inpUsername.getString().toAnsiString().c_str(), userRecord.username)==0){
             fclose(users);
-            return false;
+            return false; // if the user is found, close the file and return false
         }
     }
-    fclose(users);
+    fclose(users); // if the user is not found, the username is available and returns true
     return true;
 }
 
+// checkPassword converts a sf::Text into a std::string and compares if they are the same.
 bool checkPassword(sf::Text inpPass, sf::Text inpConfPass){
     return (inpPass.getString().toAnsiString().compare(inpConfPass.getString().toAnsiString()));
 }
 
+// when all the inputs are validated, writeUser is called, it writes in a file the username, password, number of games played and assigns one id.
 void writeUser(sf::Text inpUsername, sf::Text inpPass){
     User newUser;
     int id;
-    FILE *users = fopen("users.dat", "ab+");
+    FILE *users = fopen("users.dat", "ab+"); // open file
     if (users==NULL){
         cout << "Error while opening users.dat";
         return;
     }
-    id = assignID(users);
-    newUser.idUser = id;
+    id = assignID(users); // call assignID function
+    newUser.idUser = id; // copy all the inputs in a struct
     strcpy(newUser.username , inpUsername.getString().toAnsiString().c_str());
     strcpy(newUser.password, inpPass.getString().toAnsiString().c_str());
     newUser.nGames = 0;
-    fwrite(&newUser, sizeof(User), 1, users);
-    fclose(users);
+    fwrite(&newUser, sizeof(User), 1, users); // write the struct in the file 
+    fclose(users); // close file
 }
 
-
-int assignID(FILE *users){
-    unsigned int fileSize;
+// assignID function is a simple operation, first it sends the cursor of the file all the way to the bottom with fseek SEEK_END, then in a unsigned int variable (unsigned int means
+// it doesn't use negative numbers) with ftell return the size of the file (because the cursor is at the end) in bytes, then it divides the number of bytes by the size of the User struct
+// so it gives the number of users in the file, then it rewinds the cursor to the start of the file.
+int assignID(FILE *users){ 
+    unsigned int fileSize; 
     int idUs;
     fseek(users, 0, SEEK_END); // go to the end of the file
     fileSize = ftell(users); // return size in bytes
     idUs = fileSize / sizeof(User); // total users
     rewind(users);
-    return ++idUs;
+    return ++idUs; // returns id n+1
 }

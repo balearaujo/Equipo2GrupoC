@@ -1,3 +1,7 @@
+// Erick Fernando Perez Cruz ID: 549923
+// Valeria Alejandra Araujo Martinez ID: 340195
+// Angel Ricardo Gonzalez Soto ID: 551990
+
 #include <SFML/Graphics.hpp>
 #include "header.hpp"
 #include <stdlib.h>
@@ -7,19 +11,22 @@
 #include <fstream>
 using namespace sf;
 using namespace std;
+
+// function screenGame receives the parameters points, size, sequence array, size of the array and a bool to know if the game was paused or not, this is useful if we have to
+// load a paused game.
 void screenGame(int points, int size, int *sequence, int sequenceSize, bool paused) {
     RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!"); //create a window 825x800
     // int mat[3][3] = {{0,1,2},{3,4,5},{6,7,8}};  //Matriz 3x3 filled with numbers form 0 to 8
     
     //int size{9}; // SEND SIZE WHEN CALLING FUNCTION
-    int rows = (size == 4 ? 2 : 3);
+    int rows = (size == 4 ? 2 : 3); // all the ternary operators in this .cpp are used to handle the two difficulty levels
     int columns = rows;
-    int **mat = new int*[rows];
+    int **mat = new int*[rows]; // dynamic memory matrix
     for (int i=0; i<rows; i++){
         mat[i] = new int[columns];
     }
     int cont{0};
-    for (int i=0; i<rows; i++){
+    for (int i=0; i<rows; i++){ // fill the matrix with 0,1,2,3,....8
         for (int j=0; j<columns; j++){
             *(*(mat+i)+j) = cont;
             cont++;
@@ -28,9 +35,9 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
 
     int row=0, col=0; //row and column in 0
     //arrays of positions for the game and the user
-    int *gameSequence = new int[50];
+    int *gameSequence = new int[50]; // dynamic memory array
     
-    if (paused){
+    if (paused){ // if the game was paused, copy the array values up to the paused position to start from there
         for (int i=0; i < sequenceSize; i++){
             gameSequence[i] = sequence[i];
         }
@@ -38,7 +45,7 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
 
     int *userInput = new int [50];
     //the position in the array
-    int gsequencePos = (paused ? sequenceSize : 0);
+    int gsequencePos = (paused ? sequenceSize : 0); // if the game was paused, set the position of the last sequence, if not, start from 0
     int userinPos = (paused ? sequenceSize : 0);
 
     // logo
@@ -143,7 +150,7 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
     clock.restart(); //restart clock
 
     int r, c;
-    bool escape = false;
+    bool escape = false; // flag to have a pause menu
     bool escapePressed = false; // flag to avoid multiple escape inputs
 
     while(window.isOpen())
@@ -162,8 +169,8 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
             }
         }
         window.clear();
-        window.draw(backgSprite);    
-        if (!escape){
+        window.draw(backgSprite); // show the background
+        if (!escape){ // if the game isn't paused (escape pressed)
             if(game==showingSequence){ //ask if it´s the game´s turn
         
                 timePassed=clock.getElapsedTime().asSeconds(); //get how much time ha   s passed
@@ -303,7 +310,7 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
                 }
                 
                 window.close();
-                screenGameOver(countPoints,size);
+                screenGameOver(countPoints,size); // call the screen of game over and close the current screen
             }
             //Draw Matrix
             for(int i=0; i<rows; i++){
@@ -365,6 +372,7 @@ void screenGame(int points, int size, int *sequence, int sequenceSize, bool paus
     }
 }
 
+// saveGame function writes all the information into a text file, it mostly uses strings and streams rather than anything else
 void saveGame(int *gameSequence, int gsequencePos, States game, int score, int size){
     time_t now = time(NULL); // get the current time from the computer, time() grabs days, months, years, hours, minutes, seconds
     struct tm* time_now = localtime(&now);  // convert time from "now" into a struct

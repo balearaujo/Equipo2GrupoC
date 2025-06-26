@@ -1,10 +1,14 @@
+// Erick Fernando Perez Cruz ID: 549923
+// Valeria Alejandra Araujo Martinez ID: 340195
+// Angel Ricardo Gonzalez Soto ID: 551990
+
 #include <SFML/Graphics.hpp>
 #include "header.hpp"
 #include <iostream>
 using namespace std; 
 using namespace sf;
 
-User currentUser; //declare a global struct for one user
+User currentUser; //declare a global variable of type struct for one user, the current user that is using the program
 
 int main() {
     screenMainMenu();
@@ -12,6 +16,7 @@ int main() {
     return 0;
 }
 
+// this screen is the main one, it has log in and sign up options 
 void screenMainMenu(){
     RenderWindow window(VideoMode({825, 800}), "Fabulous Fred!", State::Windowed);
     
@@ -67,36 +72,39 @@ void screenMainMenu(){
     buttSU.setPosition({825/2, 570});
     buttBorderSU.setPosition({825/2, 570});
     
-    // animation
+    // animation variables
     bool animate = true;
     float scale = 1.f;
     float scaleSpeed = 0.05f;
     Clock clock;
 
-    int posAux{0};
+    int posAux{0}; // counter to use the menu options 
     
+    // main loop
     while (window.isOpen()) {
         // title animation with a clock
         float timeElapsed = clock.restart().asSeconds();
-        if (animate){
+        if (animate){ // if animate is set to true, the scale of the title starts growing
             scale += scaleSpeed * timeElapsed; 
-            if (scale >= 1.1f) animate = false;
+            if (scale >= 1.1f) animate = false; // if the scale hits 1.1, it turns animate to false
         } else{
-            scale -= scaleSpeed * timeElapsed;  
-            if (scale <= 1.0f) animate = true;
+            scale -= scaleSpeed * timeElapsed;  // animate false decreaases the size of the title
+            if (scale <= 1.0f) animate = true; // if the scale hits 1, turns animate into true
         }
-        tTitle.setScale({scale, scale});
+        tTitle.setScale({scale, scale}); // scale
 
+        // events loop
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()){
-                window.close();
+                window.close(); // close window
             } else if (const auto* key = event->getIf<Event::KeyPressed>()){
-                if (key->scancode == Keyboard::Scancode::Escape){
+                if (key->scancode == Keyboard::Scancode::Escape){ // if escape is pressed, the window close
                     window.close();
                 }
             }
-        
-            if (posAux>0 && posAux<=1)
+            
+            // set a range for posAux 0<=posAux>=1 when pressing up or down key
+            if (posAux>0 && posAux<=1) 
                 if (Keyboard::isKeyPressed(Keyboard::Key::Up)){
                     posAux--;
                     cout << posAux;
@@ -108,6 +116,7 @@ void screenMainMenu(){
                 }
             }
 
+            // simulates an options menu, it switches colors depending of the posAux value
             switch(posAux){
                 case 0:
                     buttBorderLI.setFillColor(Color::Red);
@@ -124,7 +133,7 @@ void screenMainMenu(){
                     break;
             }
 
-            
+            // menu options when pressing enter, they use posAux too
             if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Enter){
                     if (posAux==0){ // log in
@@ -138,7 +147,8 @@ void screenMainMenu(){
                 }
             }
         }
-
+        
+        // draw everything
         window.clear(Color::Black);
         window.draw(backgSprite);
         window.draw(buttBorderSU);

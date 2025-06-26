@@ -1,3 +1,7 @@
+// Erick Fernando Perez Cruz ID: 549923
+// Valeria Alejandra Araujo Martinez ID: 340195
+// Angel Ricardo Gonzalez Soto ID: 551990
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <fstream>
@@ -5,6 +9,7 @@
 using namespace std;
 using namespace sf;
 
+// function screenGameOver is a screen that shows when the user inputs the sequence wrong while playing
 void screenGameOver(int score, int size){
     RenderWindow window(sf::VideoMode({825, 800}), "Fabulous Fred!"); // creates the 825x800 window
     // logo
@@ -95,7 +100,7 @@ void screenGameOver(int score, int size){
         while (const optional event = window.pollEvent()){ // check and handle window events
             if (event->is<sf::Event::Closed>()) // check if the event was closing the window
                 window.close();
-            // if scape is pressed the screen returns to the main menu
+            // if escape is pressed the screen returns to the main menu
             if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Escape){ 
                     window.close();
@@ -106,16 +111,16 @@ void screenGameOver(int score, int size){
             if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Enter && !enterPressed){
                     enterPressed = true;
-                    sleep(milliseconds(150)); 
+                    sleep(milliseconds(150)); // sleep to avoid double enter 
                     switch(posAux){ 
-                        case 0:
+                        case 0: // case 0, back to the menu button
                             window.close();
                             screenMenu();
                             break;
                         
                         case 1:
-                            window.close();
-                            screenGame(0, size, 0, 0, false);
+                            window.close(); // case 1, try again button
+                            screenGame(0, size, 0, 0, false); // calls the game function and starts the game again
                             break;
                     }
                 }

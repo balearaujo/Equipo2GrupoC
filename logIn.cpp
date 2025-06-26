@@ -1,3 +1,7 @@
+// Erick Fernando Perez Cruz ID: 549923
+// Valeria Alejandra Araujo Martinez ID: 340195
+// Angel Ricardo Gonzalez Soto ID: 551990
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string.h>
@@ -41,7 +45,7 @@ void screenLogIn(){
     // 0 username, 1 password, 2 button, 3 home button
     int posAux{0};
 
-    // declaration
+    // declarations
     Font font("assets/BurbankBigCondensed-Black.otf");
     Text tTitle(font, "LOG IN", 90);
     Text tUsername(font, "USERNAME", 30);
@@ -50,14 +54,14 @@ void screenLogIn(){
     Text tWarningPass(font, "", 30);
     Text tButtonLI(font, "LOG IN", 50);
     
-    sf::String concatUser("");
+    sf::String concatUser(""); // concat strings are useful to simulate a text input
     sf::String concatPass("");
     Text inpUsername(font, "", 50);
     Text inpPass(font, "", 50);
     RectangleShape buttSub(Vector2f{350, 75});
     RectangleShape buttSubBorder(Vector2f{370, 90});
     
-    // color
+    // colors
     tTitle.setFillColor(Color::White);
     tUsername.setFillColor(Color::White);
     tPass.setFillColor(Color::White);
@@ -70,7 +74,7 @@ void screenLogIn(){
     buttSub.setFillColor(Color(130,130,130)); 
     buttSubBorder.setFillColor(Color::Transparent);
     
-    // origin
+    // origins
     tTitle.setOrigin({100, 40});
     tUsername.setOrigin({65, 17});
     tPass.setOrigin({65, 17});
@@ -96,7 +100,7 @@ void screenLogIn(){
     buttSub.setPosition({825/2, 575});
     buttSubBorder.setPosition({825/2, 575});
 
-    // design
+    // create multiple rectangles with equal properties using a vector of rectangles
     vector<RectangleShape> inpBoxes; // input boxes
     for (int i = 0; i<2; i++){
         RectangleShape inpBox;
@@ -106,7 +110,8 @@ void screenLogIn(){
         inpBox.setPosition({825/2, 300.f + i * 160.f});
         inpBoxes.push_back(inpBox);
     }
-
+    
+    // create multiple rectangle borders with equal properties using a vector of rectangles
     vector<RectangleShape> inpBoxesBorder; // white border 
     for (int i = 0; i<2; i++){
         RectangleShape inpBoxBor;
@@ -117,21 +122,25 @@ void screenLogIn(){
         inpBoxesBorder.push_back(inpBoxBor);
     }
 
+    // flag used for showing a image that is used as a menu button
     bool homeIconHover = false;
 
+    // main loop
     while (window.isOpen())
-    {
+    {   
+        // events loop
         while (const std::optional event = window.pollEvent())
         {   
             if (event->is<sf::Event::Closed>()){
-                window.close();
+                window.close(); 
             } else if (const auto* key = event->getIf<Event::KeyPressed>()){
                 if (key->scancode == Keyboard::Scancode::Escape){
-                    window.close();
+                    window.close(); // if the escape key is pressed, the actual window closes and goes one back
                     screenMainMenu();
                 }
             }
 
+            // set a range to manipulate the menu
             if (posAux >= 0 && posAux<3){
                 if (Keyboard::isKeyPressed(Keyboard::Key::Down)){
                     posAux++;
@@ -144,13 +153,15 @@ void screenLogIn(){
                     cout << posAux;
                 }
             }
+            
+            // simulate the menu by switching classes colors
             switch(posAux){
                 case 0:
                     tUsername.setFillColor(Color(102, 179, 255));
                     tPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
-                    setInputValues(inpUsername, event.value(), concatUser, tWarnings);
-                    homeIconHover = false;
+                    setInputValues(inpUsername, event.value(), concatUser, tWarnings); // function setInputValues sends the original variable, a copy of the events, a variable to concat
+                    homeIconHover = false;                              // everything that it's being writed and a text used for showing warnings while inputting the username or password
                     break;
                 case 1:
                     tPass.setFillColor(Color(102, 179, 255));
@@ -164,43 +175,44 @@ void screenLogIn(){
                     tPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Red);
                     if (const auto* key = event->getIf<Event::KeyPressed>()){
-                        if (key->scancode == Keyboard::Scancode::Enter){
-                            if (inpPass.getString().getSize()<8 || inpUsername.getString().getSize()<8){
+                        if (key->scancode == Keyboard::Scancode::Enter){ // if the user press enter, evaluate if the input of the password and user are smaller than 8 characters
+                            if (inpPass.getString().getSize()<8 || inpUsername.getString().getSize()<8){ 
                                 tWarningPass.setString("USERNAME / PASSWORD MUST BE AT LEAST 8 CHARACTERS");
                                 tWarningPass.setFillColor(Color::Yellow);
-                            } else{ // user available, same password, correct lenght
+                            } else{  // if they are longer than 8 characters, the function isValidUser is called with the passord and username input to check if its a real user
                                 if (isValidUser(inpUsername, inpPass)){
-                                    window.close();
+                                    window.close(); // if it is a real user, closes de windows and goes to the next screen
                                     screenMenu();
                                 } else{
-                                    tWarningPass.setString("LOGIN FAILED. VERIFY YOUR INFORMATION AND TRY AGAIN");
-                                    tWarningPass.setFillColor(Color::Yellow);
+                                    tWarningPass.setString("LOGIN FAILED. VERIFY YOUR INFORMATION AND TRY AGAIN"); // not a real user, show a warning
+                                    tWarningPass.setFillColor(Color::Yellow); // warning in yellow
                                 }
                             }
                         }
                     }
-                    homeIconHover = false;
+                    homeIconHover = false; // flag for the house icon that works as a go back button
                     break;
                 case 3:
                     tUsername.setFillColor(Color::White);
                     tPass.setFillColor(Color::White);
                     buttSubBorder.setFillColor(Color::Transparent);
                     homeIconHover = true;
-                    if (const auto* key = event->getIf<Event::KeyPressed>()){
+                    if (const auto* key = event->getIf<Event::KeyPressed>()){ // go back button
                         if (key->scancode == Keyboard::Scancode::Enter){
-                            window.close();
+                            window.close(); 
                             screenMainMenu();
                         }
                     }
             }
 
-            if (!inpUsername.getString().isEmpty() && !inpPass.getString().isEmpty()){
+            if (!inpUsername.getString().isEmpty() && !inpPass.getString().isEmpty()){ // if all the inputs have information, switch the button to color red
                 buttSub.setFillColor(Color(253,114,114));
             } else{
-                buttSub.setFillColor(Color(130,130,130));
+                buttSub.setFillColor(Color(130,130,130)); // if not, gray
             }
         }   
         
+        // show everything on screen
         window.clear();
         window.draw(backgSprite);
         window.draw(tTitle);
@@ -230,6 +242,7 @@ void screenLogIn(){
     }
 }
 
+// this function receives the input from the username and password, opens a users.dat file and starts comparing line by line if the user exist and it has the same input password
 bool isValidUser(sf::Text inpUsername, sf::Text inpPass){
     User checkUser;
     FILE *users;
@@ -240,22 +253,23 @@ bool isValidUser(sf::Text inpUsername, sf::Text inpPass){
     }
 
     while (fread(&checkUser, sizeof(User), 1, users)){ // read file, search username and compare
-        if ((strcmp(inpUsername.getString().toAnsiString().c_str(), checkUser.username)==0) &&
-            (strcmp(inpPass.getString().toAnsiString().c_str(), checkUser.password)==0))
+        if ((strcmp(inpUsername.getString().toAnsiString().c_str(), checkUser.username)==0) && // compare username
+            (strcmp(inpPass.getString().toAnsiString().c_str(), checkUser.password)==0)) // compare password
             {
                 cout << "usuarios correctos" << endl;
                 
-                // set the user as a global variable so we can access it from all the files
+                // copy the data of the user and set it as a global variable so we can access it from all the files
+                // the variable is declared as extern in the header.hpp and the original declaration is on main because the program compiles all files on main
                 currentUser.idUser = checkUser.idUser;
                 strcpy(currentUser.username, checkUser.password);
                 strcpy(currentUser.username, checkUser.password);
                 currentUser.nGames = checkUser.nGames;
                 
-                fclose(users);
-                return true;
+                fclose(users); // close file
+                return true; // if the user exists returns true
         } 
 
     }
-    fclose(users);
-    return false;
+    fclose(users); // close file
+    return false; // if the user doesn't exist returns false
 }
